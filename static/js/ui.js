@@ -84,6 +84,7 @@
     }
 
     setText("info-file", metadata.fileName || "—");
+    setText("metadata-file-pill", metadata.fileName || "No file");
     setText("info-orca-version", metadata.orcaVersion || "—");
     setText("info-section", metadata.sectionFound ? metadata.spectrumSource : "not found");
     setText("info-transition-count", formatInteger(metadata.transitionCount ?? 0));
@@ -368,15 +369,19 @@
 
   function renderExperimentalData(parsedExperimental) {
     const metadata = parsedExperimental?.metadata ?? null;
-
+  
     if (!metadata) {
+      setText("experimental-file-pill", "No file");
+  
       setText("exp-file", "—");
       setText("exp-delimiter", "—");
       setText("exp-x-column", "—");
       setText("exp-points", "0");
       return;
     }
-
+  
+    setText("experimental-file-pill", metadata.fileName || "No file");
+  
     setText("exp-file", metadata.fileName || "—");
     setText("exp-delimiter", metadata.delimiter || "—");
     setText("exp-x-column", metadata.xColumn ?? "—");
@@ -417,6 +422,7 @@
   }
 
   function clearOrcaMetadata() {
+    setText("metadata-file-pill", "No file");
     setText("info-file", "—");
     setText("info-orca-version", "—");
     setText("info-section", "—");

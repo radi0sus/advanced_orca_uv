@@ -600,6 +600,27 @@ label,
   background: var(--accent-soft);
 }
 
+.file-pill {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel-header h2,
+.collapsible-summary h2 {
+  min-width: 0;
+}
+
+.panel-header .file-pill,
+.collapsible-summary .file-pill {
+  flex: 0 1 auto;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Cards and plot */
 
 .plot-card,
@@ -689,11 +710,13 @@ label,
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
   gap: 16px;
+  align-items: start;
 }
 
 .panel {
   min-width: 0;
   overflow: hidden;
+  align-self: start;
 }
 
 .panel.wide {
@@ -851,7 +874,7 @@ details {
   overflow: hidden;
 }
 
-details + details {
+.assignments-list details + details {
   margin-top: 10px;
 }
 

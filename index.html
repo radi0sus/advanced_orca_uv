@@ -23,14 +23,14 @@
 
         <section class="control-section" aria-labelledby="section-files">
           <div class="control-section-header">
-            <h2 id="section-files">Files</h2>
-            <span class="section-badge">Local only</span>
+            <h2 id="section-files">File</h2>
+    <!--       <span class="section-badge">Local only</span> -->
           </div>
 
           <div class="field">
             <label for="orca-file">ORCA output file</label>
             <input id="orca-file" class="file-input" type="file" accept=".out,.log,.txt" />
-            <p class="field-hint">The file will be processed locally in your browser.</p>
+    <!--      <p class="field-hint">Local file processing.</p> -->
           </div>
 
           <div class="status-card" id="file-status">
@@ -87,7 +87,7 @@
             <div class="switch-row">
               <div class="switch-text">
                 <span class="switch-title">Auto range</span>
-                <span class="switch-subtitle">Use transition range plus margins.</span>
+        <!--    <span class="switch-subtitle">Use transition range plus margins.</span> -->
               </div>
               <label class="switch" for="auto-range">
                 <input id="auto-range" type="checkbox" checked />
@@ -100,9 +100,9 @@
         <section class="control-section" aria-labelledby="section-spectrum">
           <div class="control-section-header">
             <h2 id="section-spectrum">Spectrum</h2>
-            <span class="section-badge">cm⁻¹ core</span>
+    <!--    <span class="section-badge">cm⁻¹ core</span> -->
           </div>
-
+    <!--
           <div class="field">
             <div class="readout-box">
               <div class="readout-row">
@@ -118,7 +118,7 @@
               The spectrum is calculated on a cm⁻¹ energy axis and converted for display.
             </p>
           </div>
-
+    -->
           <div class="field">
             <div class="label-row">
               <label for="fwhm-slider">FWHM / cm⁻¹</label>
@@ -129,15 +129,17 @@
               <span>100</span>
               <span>5000</span>
             </div>
-
+            <p class="field-hint">
+              Calculated in cm⁻¹ axis and converted for display.
+            </p>
             <div class="readout-box" id="fwhm-readout">
               <div class="readout-row">
                 <span>Internal width</span>
                 <strong>1000 cm⁻¹</strong>
               </div>
               <div class="readout-row">
-                <span>Approx. at 300 nm</span>
-                <strong>≈ 9.0 nm</strong>
+                <span>Approx. at 400 nm</span>
+                <strong>≈ 16.0 nm</strong>
               </div>
               <div class="readout-row">
                 <span>Approx. energy width</span>
@@ -150,7 +152,7 @@
             <div class="switch-row">
               <div class="switch-text">
                 <span class="switch-title">Normalize spectrum</span>
-                <span class="switch-subtitle">Scale calculated intensity to maximum = 1.</span>
+                <span class="switch-subtitle">Normalize max. intensity to 1.</span>
               </div>
               <label class="switch" for="normalize-spectrum">
                 <input id="normalize-spectrum" type="checkbox" checked />
@@ -180,10 +182,10 @@
             <div class="range-meta">
               <span>-5000</span>
               <span>0</span>
-              <span>5000 cm⁻¹</span>
+              <span>5000</span>
             </div>
             <p class="field-hint">
-              Positive values shift the calculated spectrum to higher energy. ORCA table values remain unchanged.
+              Plot shift only.
             </p>
           </div>   
                     
@@ -224,7 +226,7 @@
             <div class="switch-row">
               <div class="switch-text">
                 <span class="switch-title">Stick spectrum</span>
-                <span class="switch-subtitle">Show oscillator-strength sticks.</span>
+                <span class="switch-subtitle">Show stick spectrum.</span>
               </div>
               <label class="switch" for="show-sticks">
                 <input id="show-sticks" type="checkbox" checked />
@@ -237,7 +239,7 @@
             <div class="switch-row">
               <div class="switch-text">
                 <span class="switch-title">State labels</span>
-                <span class="switch-subtitle">Annotate electronic states above stick spectrum.</span>
+                <span class="switch-subtitle">Annotate electronic states.</span>
               </div>
               <label class="switch" for="show-state-labels">
                 <input id="show-state-labels" type="checkbox" />
@@ -276,7 +278,7 @@
             <div class="switch-row">
               <div class="switch-text">
                 <span class="switch-title">Peak labels</span>
-                <span class="switch-subtitle">Annotate detected maxima.</span>
+                <span class="switch-subtitle">Annotate peaks.</span>
               </div>
               <label class="switch" for="show-peak-labels">
                 <input id="show-peak-labels" type="checkbox" checked />
@@ -289,7 +291,7 @@
             <div class="switch-row">
               <div class="switch-text">
                 <span class="switch-title">Grid</span>
-                <span class="switch-subtitle">Show helper grid.</span>
+                <span class="switch-subtitle">Show grid.</span>
               </div>
               <label class="switch" for="show-grid">
                 <input id="show-grid" type="checkbox" />
@@ -308,7 +310,7 @@
             <div class="switch-row">
               <div class="switch-text">
                 <span class="switch-title">Detect peaks</span>
-                <span class="switch-subtitle">Find local maxima in normalized intensity.</span>
+                <span class="switch-subtitle">Find peaks in normalized spectrum.</span>
               </div>
               <label class="switch" for="detect-peaks">
                 <input id="detect-peaks" type="checkbox" checked />
@@ -324,8 +326,8 @@
             </div>
             <input id="peak-height-slider" class="range-input" type="range" min="0" max="100" step="1" value="2" />
             <div class="range-meta">
-              <span>0 %</span>
-              <span>100 %</span>
+              <span>0</span>
+              <span>100</span>
             </div>
           </div>
 
@@ -337,7 +339,7 @@
             <input id="peak-distance-slider" class="range-input" type="range" min="0" max="10000" step="10" value="10" />
             <div class="range-meta">
               <span>0</span>
-              <span>10 cm⁻¹</span>
+              <span>10000</span>
             </div>
           </div>
         </section>
@@ -351,7 +353,7 @@
             <label for="experimental-file">Experimental CSV</label>
             <input id="experimental-file" class="file-input" type="file" accept=".csv,.txt,.dat" />
             <p class="field-hint">
-              Optional overlay: absorbance, transmittance, or intensity data. X values are interpreted as wavelength / nm.
+              2 columns: x = wavelength in nm  y = intensity.
             </p>
           </div>
 
@@ -383,7 +385,7 @@
             <div class="switch-row">
               <div class="switch-text">
                 <span class="switch-title">Normalize overlay</span>
-                <span class="switch-subtitle">Scale experimental data to calculated spectrum.</span>
+                <span class="switch-subtitle">Scale exp. data.</span>
               </div>
               <label class="switch" for="normalize-experimental">
                 <input id="normalize-experimental" type="checkbox" checked />
@@ -396,7 +398,7 @@
             <div class="switch-row">
               <div class="switch-text">
                 <span class="switch-title">Baseline correction</span>
-                <span class="switch-subtitle">Subtract experimental baseline before scaling.</span>
+                <span class="switch-subtitle">Subtract exp. baseline before scaling.</span>
               </div>
               <label class="switch" for="baseline-correction">
                 <input id="baseline-correction" type="checkbox" />
@@ -473,7 +475,7 @@
           <div class="plot-meta">
             <span class="pill" id="plot-axis-pill">X: Wavelength / nm</span>
             <span class="pill" id="plot-fwhm-pill">FWHM: 1000 cm⁻¹</span>
-            <span class="pill">Gaussian</span>
+    <!--    <span class="pill">Gaussian</span> -->
           </div>
         </div>
         
@@ -488,11 +490,12 @@
       </section>
 
       <section class="analysis-grid" aria-label="Analysis panels">
-        <article class="panel">
-          <div class="panel-header">
+        <details class="panel collapsible-panel" open>
+          <summary class="panel-header collapsible-summary">
             <h2>Info & metadata</h2>
-          </div>
-
+            <span class="pill file-pill" id="metadata-file-pill">No file</span>
+          </summary>
+        
           <div class="panel-body">
             <div class="metadata-grid">
               <div class="metadata-key">File</div>
@@ -547,14 +550,14 @@
               <div class="metadata-value">Gaussian</div>
             </div>
           </div>
-        </article>
+        </details>
 
-        <article class="panel">
-          <div class="panel-header">
+        <details class="panel collapsible-panel" open>
+          <summary class="panel-header collapsible-summary">
             <h2>Detected peaks</h2>
             <span class="pill" id="peak-count-pill">0 peaks</span>
-          </div>
-
+          </summary>
+        
           <div class="panel-body">
             <div class="table-wrap">
               <table aria-label="Detected peaks">
@@ -571,7 +574,7 @@
               </table>
             </div>
           </div>
-        </article>
+        </details>
 
         <details class="panel wide collapsible-panel">
           <summary class="panel-header collapsible-summary">
@@ -622,12 +625,12 @@
           </div>
         </details>
         
-        <article class="panel">
-          <div class="panel-header">
+        <details class="panel collapsible-panel">
+          <summary class="panel-header collapsible-summary">
             <h2>Experimental data</h2>
-            <span class="pill">Optional</span>
-          </div>
-
+            <span class="pill file-pill" id="experimental-file-pill">No file</span>
+          </summary>
+        
           <div class="panel-body">
             <div class="metadata-grid">
               <div class="metadata-key">CSV file</div>
@@ -652,7 +655,7 @@
               <div class="metadata-value" id="exp-normalization-info">enabled</div>
             </div>
           </div>
-        </article>
+        </details>
         
       </section>
     </main>

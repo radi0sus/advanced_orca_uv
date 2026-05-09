@@ -509,16 +509,15 @@
   }
 
   function gaussianRainbowColor(center, minCenter, maxCenter, alpha) {
-    const denominator = Math.max(maxCenter - minCenter, 1e-12);
-    const relative = clamp((center - minCenter) / denominator, 0, 1);
-
-    /*
-      Low energy: blue/violet
-      High energy: red/orange
-    */
-    const hue = 260 - relative * 260;
-
-    return `hsla(${hue.toFixed(1)}, 85%, 55%, ${alpha})`;
+      /*
+        center in cm⁻¹
+        14286 cm⁻¹ (~700 nm) = Rot    (Hue 0°)
+        26316 cm⁻¹ (~380 nm) = Violett (Hue 270°)
+        alles außerhalb geclampt
+      */
+      const relative = clamp((center - 14286) / (26316 - 14286), 0, 1);
+      const hue = relative * 270;
+      return `hsla(${hue.toFixed(1)}, 90%, 50%, ${alpha})`;
   }
 
   function buildStateLabelAnnotations(spectrum, options, yMax, colors) {
