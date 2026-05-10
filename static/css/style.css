@@ -847,7 +847,7 @@ th {
   color: var(--text-muted);
   background: var(--surface-soft);
   font-size: 0.74rem;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   letter-spacing: 0.055em;
 }
 

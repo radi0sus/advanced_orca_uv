@@ -286,10 +286,10 @@
             <table aria-label="Assignments for ${stateLabel}">
               <thead>
                 <tr>
-                  <th>assignment</th>
+                  <th>Assignment</th>
                   <th>ORCA transition</th>
-                  <th>weight / %</th>
-                  <th>coefficient</th>
+                  <th>Weight / %</th>
+                  <th>Coefficient</th>
                 </tr>
               </thead>
               <tbody>
@@ -346,7 +346,7 @@
     if (peakCount === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="5">No peaks detected.</td>
+          <td colspan="6">No peaks detected.</td>
         </tr>
       `;
       return;
@@ -362,6 +362,7 @@
             <td>${formatNumber(displayed.wavelengthNm, 1)}</td>
             <td>${formatNumber(displayed.energyEv, 3)}</td>
             <td>${formatNumber(displayed.energyCm1, 1)}</td>
+            <td>${formatNumber(peak.intensityScaled, 3)}</td>
             <td>${formatNumber(peak.relativeIntensityPercent, 1)}</td>
           </tr>
         `;
