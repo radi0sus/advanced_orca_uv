@@ -4,7 +4,7 @@
 > 👉 Original CLI tool: https://github.com/radi0sus/orca_uv
 
 
-https://github.com/radi0sus/media/releases/download/video/advanced_orca_uv.mp4
+https://github.com/user-attachments/assets/aac4a7ae-c32c-48f1-9c4c-e16127fe051d
 
 # Advanced ORCA UV-Vis Viewer
 
