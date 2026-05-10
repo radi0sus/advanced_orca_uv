@@ -5,7 +5,7 @@
 
   window.OrcaUV = window.OrcaUV || {};
 
-  const { DEFAULTS, UNITS, THRESHOLDS } = window.OrcaUV.Constants;
+  const { DEFAULTS, UNITS, THRESHOLDS, PARSER } = window.OrcaUV.Constants;
   const { cm1ToEv } = window.OrcaUV.Import;
 
   function initUi() {
@@ -21,6 +21,8 @@
       autoRange: getCheckboxValue("auto-range", DEFAULTS.autoRange),
       rangeMin: getOptionalNumberValue("range-min"),
       rangeMax: getOptionalNumberValue("range-max"),
+      
+      assignmentDisplay: getCheckedRadioValue("assignment-display", DEFAULTS.assignmentDisplay),
 
       fwhmCm1: getNumberValue("fwhm-slider", DEFAULTS.fwhmCm1),
 
@@ -148,7 +150,7 @@
     );
   }
 
-  function renderTransitionsTable(transitions) {
+  function renderTransitionsTable(transitions, uiState = getUiState()) {
     const tableBody = document.getElementById("transitions-table-body");
     const countPill = document.getElementById("transitions-count-pill");
 
@@ -178,7 +180,8 @@
         const energyEv = formatNumber(transition.energyEv, 3);
         const energyCm1 = formatNumber(transition.energyCm1, 1);
         const fosc = formatScientificOrFixed(transition.fosc);
-        const assignment = escapeHtml(transition.assignment ?? "—");
+        // const assignment = escapeHtml(transition.assignment ?? "—");
+        const assignment = escapeHtml(getTransitionAssignmentText(transition, uiState));
         const rowClass = getTransitionRowClass(transition);
         
         return `
@@ -204,6 +207,66 @@
     }
   
     return "";
+  }
+
+  function getTransitionAssignmentText(transition, uiState) {
+    const mode = uiState?.assignmentDisplay || DEFAULTS.assignmentDisplay;
+  
+    if (mode === "orca" || mode === "orca-orbitals") {
+      return summarizeAssignmentField(transition?.excitedState?.assignments, "transition");
+    }
+  
+    return transition?.assignment || "—";
+  }
+  
+  function summarizeAssignmentField(assignments, field) {
+    if (!Array.isArray(assignments) || assignments.length === 0) {
+      return "—";
+    }
+  
+    const threshold = Number.isFinite(PARSER?.mainAssignmentWeightThreshold)
+      ? PARSER.mainAssignmentWeightThreshold
+      : 0.05;
+  
+    const maxAssignments = Number.isInteger(PARSER?.maxMainAssignments)
+      ? PARSER.maxMainAssignments
+      : 3;
+  
+    const weightedAssignments = assignments
+      .filter((assignment) => Number.isFinite(assignment.weight))
+      .sort((a, b) => b.weight - a.weight);
+  
+    const selected = weightedAssignments
+      .filter((assignment) => assignment.weight >= threshold)
+      .slice(0, maxAssignments);
+  
+    const finalSelection = selected.length > 0
+      ? selected
+      : weightedAssignments.slice(0, 1);
+  
+    if (finalSelection.length === 0) {
+      return "—";
+    }
+  
+    return finalSelection
+      .map((assignment) => {
+        const value =
+          assignment?.[field] ||
+          assignment?.transition ||
+          assignment?.assignment ||
+          "—";
+  
+        return `${value} (${formatAssignmentPercent(assignment.weight)})`;
+      })
+      .join(", ");
+  }
+  
+  function formatAssignmentPercent(value) {
+    if (!Number.isFinite(value)) {
+      return "—";
+    }
+  
+    return `${(value * 100).toFixed(1)}%`;
   }
 
   function renderAssignmentsPanel(excitedStates, homoLumo) {

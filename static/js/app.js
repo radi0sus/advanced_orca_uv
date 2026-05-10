@@ -17,6 +17,7 @@
     showToast,
     renderOrcaData,
     renderExperimentalData,
+    renderTransitionsTable,
     renderPeaksTable,
     renderCurrentSettings,
     clearRenderedData,
@@ -137,6 +138,7 @@
       "#normalize-experimental",
       "#baseline-correction",
       'input[name="experimental-style"]',
+      'input[name="assignment-display"]',
     ].join(",");
 
     document.querySelectorAll(controlSelector).forEach((element) => {
@@ -229,6 +231,7 @@
     const uiState = getUiState();
     const transitions = appState.parsedOrca?.transitions ?? [];
 
+    renderTransitionsTable(transitions, uiState);
     appState.spectrum = buildSpectrum(transitions, uiState);
 
     appState.peaks = uiState.detectPeaks

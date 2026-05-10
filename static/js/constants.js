@@ -82,6 +82,7 @@
     normalizeExperimental: true,
     baselineCorrection: false,
     experimentalStyle: "line-fill",
+    assignmentDisplay: "homo-lumo",
   };
 
   const PARSER = {
