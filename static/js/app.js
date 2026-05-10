@@ -14,6 +14,7 @@
     initUi,
     getUiState,
     updateUiReadouts,
+    resetUiControlsToDefaults,
     showToast,
     renderOrcaData,
     renderExperimentalData,
@@ -44,6 +45,7 @@
   const {
     exportPng,
     exportCsv,
+    exportTransitionsMarkdown,
   } = window.OrcaUV.Export;
 
   const {
@@ -79,6 +81,7 @@
 
     const exportPngButton = document.getElementById("export-png");
     const exportCsvButton = document.getElementById("export-csv");
+    const exportTransitionsMdButton = document.getElementById("export-transitions-md");
 
     const resetViewButton = document.getElementById("reset-view");
     const clearDataButton = document.getElementById("clear-data");
@@ -98,6 +101,10 @@
     if (exportCsvButton) {
       exportCsvButton.addEventListener("click", handleExportCsv);
     }
+
+    if (exportTransitionsMdButton) {
+      exportTransitionsMdButton.addEventListener("click", handleExportTransitionsMarkdown);
+    }   
 
     if (resetViewButton) {
       resetViewButton.addEventListener("click", handleResetView);
@@ -283,26 +290,77 @@
     `;
   }
 
-  function handleExportPng() {
+  async function handleExportPng() {
+    if (!appState.parsedOrca || !appState.spectrum) {
+      showToast("PNG export", "No ORCA data loaded.", "warning");
+      return;
+    }
+  
     const plotElement = document.getElementById("plot");
-    const uiState = getUiState();
-
-    exportPng(plotElement, uiState);
+  
+    try {
+      await exportPng(plotElement, {
+        fileName: appState.parsedOrca.metadata?.fileName,
+      });
+  
+      showToast("PNG exported", "Plot image downloaded.", "success");
+    } catch (error) {
+      console.error(error);
+      showToast("PNG export failed", error.message ?? "Unknown error", "error");
+    }
   }
-
+  
   function handleExportCsv() {
+    if (!appState.parsedOrca || !appState.spectrum) {
+      showToast("CSV export", "No calculated spectrum to export.", "warning");
+      return;
+    }
+  
     const uiState = getUiState();
-    const csvText = exportCsv(appState.spectrum, uiState);
+  
+    try {
+      exportCsv(appState.spectrum, uiState, {
+        fileName: appState.parsedOrca.metadata?.fileName,
+      });
+  
+      showToast("CSV exported", "Spectrum data downloaded.", "success");
+    } catch (error) {
+      console.error(error);
+      showToast("CSV export failed", error.message ?? "Unknown error", "error");
+    }
+  }
+  
+  function handleExportTransitionsMarkdown() {
+    if (!appState.parsedOrca || !Array.isArray(appState.parsedOrca.transitions) || appState.parsedOrca.transitions.length === 0) {
+      showToast("Markdown export", "No transitions to export.", "warning");
+      return;
+    }
 
-    console.info("CSV export placeholder:");
-    console.info(csvText);
-
-    showToast("CSV export", "Placeholder only. Real download will be added later.", "info");
+    const uiState = getUiState();
+  
+    try {
+      exportTransitionsMarkdown(appState.parsedOrca, uiState, {
+        fileName: appState.parsedOrca.metadata?.fileName,
+      });
+  
+      showToast("Markdown exported", "Transitions table downloaded.", "success");
+    } catch (error) {
+      console.error(error);
+      showToast("Markdown export failed", error.message ?? "Unknown error", "error");
+    }
   }
 
   function handleResetView() {
-    showToast("Reset view", "Placeholder only.", "info");
-    rerender();
+    resetUiControlsToDefaults();
+  
+    if (appState.parsedOrca) {
+      recalculate();
+    } else {
+      renderCurrentSettings(getUiState(), null, null);
+      clearPlot();
+    }
+  
+    showToast("View reset", "Display settings restored to defaults.", "info");
   }
 
   function handleClearData() {

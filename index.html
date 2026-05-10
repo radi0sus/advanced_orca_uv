@@ -17,7 +17,7 @@
           <div class="brand-mark" aria-hidden="true">UV</div>
           <div>
             <h1 class="brand-title">Advanced ORCA UV-Vis</h1>
-            <p class="brand-subtitle">Interactive local spectrum viewer</p>
+            <p class="brand-subtitle">Interactive spectrum viewer</p>
           </div>
         </header>
     
@@ -471,9 +471,10 @@
           </summary>
     
           <div class="sidebar-section-body">
-            <div class="button-row">
-              <button id="export-png" class="btn primary" type="button">Export PNG</button>
-              <button id="export-csv" class="btn" type="button">Export CSV</button>
+            <div class="button-row three">
+              <button id="export-png" class="btn primary" type="button">PNG</button>
+              <button id="export-csv" class="btn" type="button">CSV</button>
+              <button id="export-transitions-md" class="btn" type="button">Transitions MD</button>
             </div>
     
             <div class="readout-box">
@@ -482,7 +483,7 @@
                 <strong>5</strong>
               </div>
               <p class="field-hint no-margin">
-                x_nm, x_cm-1, x_eV, intensity, intensity_norm
+                x /nm, x /cm⁻¹, x /eV, intensity, scaled intensity 
               </p>
             </div>
           </div>
@@ -498,10 +499,11 @@
               <button id="reset-view" class="btn" type="button">Reset view</button>
               <button id="clear-data" class="btn" type="button">Clear data</button>
             </div>
-    
+    <!-- 
             <p class="footer-note">
-              Runs locally in your browser. No data is uploaded.
+              Runs locally in browser. No data upload.
             </p>
+    -->
           </div>
         </details>
       </div>
@@ -512,7 +514,7 @@
         <div class="page-title-group">
           <h1 class="page-title">Absorption spectrum</h1>
           <p class="page-subtitle">
-            ORCA UV-Vis spectrum viewer with Gaussian broadening in the energy domain.
+             UV-Vis spectrum from ORCA output file.
           </p>
         </div>
 

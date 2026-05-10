@@ -664,6 +664,16 @@ details.control-section.sidebar-collapsible[open] > .sidebar-summary::after {
   background: var(--accent-strong);
 }
 
+.button-row.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.button-row.three .btn {
+  padding-inline: 6px;
+  font-size: 0.72rem;
+}
+
+
 @media (prefers-color-scheme: dark) {
   .btn.primary,
   .btn.primary:hover {

@@ -553,6 +553,47 @@
     updateFileStatus("No ORCA UV-Vis data loaded yet.", "warning");
   }
 
+  function resetUiControlsToDefaults() {
+    setRadioValue("x-axis", DEFAULTS.xAxis);
+    setRadioValue("axis-direction", DEFAULTS.axisDirection);
+  
+    setCheckboxValue("auto-range", DEFAULTS.autoRange);
+    setInputValue("range-min", "");
+    setInputValue("range-max", "");
+  
+    setInputValue("fwhm-slider", DEFAULTS.fwhmCm1);
+  
+    setCheckboxValue("normalize-spectrum", DEFAULTS.normalizeSpectrum);
+    setInputValue("scale-factor-slider", DEFAULTS.scaleFactor);
+    setInputValue("spectrum-shift-slider", DEFAULTS.spectrumShiftCm1);
+  
+    setCheckboxValue("show-spectrum", DEFAULTS.showSpectrum);
+    setCheckboxValue("show-spectrum-fill", DEFAULTS.showSpectrumFill);
+    setCheckboxValue("show-sticks", DEFAULTS.showSticks);
+    setCheckboxValue("show-state-labels", DEFAULTS.showStateLabels);
+    setCheckboxValue("show-single-gaussians", DEFAULTS.showSingleGaussians);
+    setCheckboxValue("show-gaussian-areas", DEFAULTS.showGaussianAreas);
+    setCheckboxValue("show-peak-labels", DEFAULTS.showPeakLabels);
+    setCheckboxValue("show-grid", DEFAULTS.showGrid);
+  
+    setCheckboxValue("detect-peaks", DEFAULTS.detectPeaks);
+    setInputValue("peak-height-slider", DEFAULTS.peakHeightPercent);
+    setInputValue("peak-distance-slider", DEFAULTS.peakDistanceCm1);
+  
+    setRadioValue("assignment-display", DEFAULTS.assignmentDisplay);
+    setRadioValue("assignment-selection-mode", DEFAULTS.assignmentSelectionMode);
+    setInputValue("assignment-threshold-slider", DEFAULTS.assignmentThresholdPercent);
+    setCheckboxValue("show-transition-labels", DEFAULTS.showTransitionLabels);
+  
+    setCheckboxValue("show-experimental", DEFAULTS.showExperimental);
+    setSelectValue("experimental-y-type", DEFAULTS.experimentalYType);
+    setCheckboxValue("normalize-experimental", DEFAULTS.normalizeExperimental);
+    setCheckboxValue("baseline-correction", DEFAULTS.baselineCorrection);
+    setRadioValue("experimental-style", DEFAULTS.experimentalStyle);
+  
+    updateUiReadouts();
+  }
+
   function showToast(title, message, type = "info") {
     const toastStack = document.querySelector(".toast-stack");
 
@@ -848,6 +889,38 @@ function setInputInvalid(element, invalid) {
   }
 }
 
+  function setRadioValue(name, value) {
+    const elements = document.querySelectorAll(`input[name="${name}"]`);
+  
+    elements.forEach((element) => {
+      element.checked = element.value === value;
+    });
+  }
+  
+  function setCheckboxValue(id, value) {
+    const element = document.getElementById(id);
+  
+    if (element) {
+      element.checked = Boolean(value);
+    }
+  }
+  
+  function setInputValue(id, value) {
+    const element = document.getElementById(id);
+  
+    if (element) {
+      element.value = value == null ? "" : String(value);
+    }
+  }
+
+  function setSelectValue(id, value) {
+    const element = document.getElementById(id);
+  
+    if (element) {
+      element.value = value;
+    }
+  }
+
   function getCheckedRadioValue(name, fallback) {
     const element = document.querySelector(`input[name="${name}"]:checked`);
     return element ? element.value : fallback;
@@ -955,6 +1028,7 @@ function setInputInvalid(element, invalid) {
     initUi,
     getUiState,
     updateUiReadouts,
+    resetUiControlsToDefaults,
     renderOrcaData,
     renderOrcaMetadata,
     renderTransitionsTable,
