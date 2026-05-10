@@ -3,6 +3,9 @@
 > 👉 Try it here: https://radi0sus.github.io/advanced_orca_uv/  
 > 👉 Original CLI tool: https://github.com/radi0sus/orca_uv
 
+
+https://github.com/radi0sus/media/releases/download/video/advanced_orca_uv.mp4
+
 # Advanced ORCA UV-Vis Viewer
 
 A browser-based successor to the original [`orca_uv`](https://github.com/radi0sus/orca_uv) Python CLI tool for plotting calculated UV-Vis absorption spectra from [ORCA](https://orcaforum.kofo.mpg.de) output files.
