@@ -5,7 +5,7 @@
 
   window.OrcaUV = window.OrcaUV || {};
 
-  const { DEFAULTS, UNITS } = window.OrcaUV.Constants;
+  const { DEFAULTS, UNITS, THRESHOLDS } = window.OrcaUV.Constants;
   const { cm1ToEv } = window.OrcaUV.Import;
 
   function initUi() {
@@ -179,9 +179,10 @@
         const energyCm1 = formatNumber(transition.energyCm1, 1);
         const fosc = formatScientificOrFixed(transition.fosc);
         const assignment = escapeHtml(transition.assignment ?? "—");
-
+        const rowClass = getTransitionRowClass(transition);
+        
         return `
-          <tr>
+          <tr class="${rowClass}">
             <td>${stateLabel}</td>
             <td>${wavelength}</td>
             <td>${energyEv}</td>
@@ -192,6 +193,17 @@
         `;
       })
       .join("");
+  }
+
+  function getTransitionRowClass(transition) {
+    const threshold = THRESHOLDS?.significantFosc ?? 0.005;
+    const fosc = Number(transition?.fosc);
+  
+    if (Number.isFinite(fosc) && fosc >= threshold) {
+      return "fosc-significant";
+    }
+  
+    return "";
   }
 
   function renderAssignmentsPanel(excitedStates, homoLumo) {

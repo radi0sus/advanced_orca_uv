@@ -859,6 +859,14 @@ tbody tr:last-child td {
   border-bottom: none;
 }
 
+tr.fosc-significant td {
+  background: color-mix(in srgb, var(--warning-soft) 40%, transparent);
+}
+
+tr.fosc-significant td:first-child {
+  border-left: 3px solid color-mix(in srgb, var(--warning) 65%, var(--border));
+}
+
 /* Empty states */
 
 .empty-state {

@@ -97,6 +97,10 @@
     },
   };
 
+  const THRESHOLDS = {
+    significantFosc: 0.005,
+  };
+
   const EXPORT_COLUMNS = [
     "x_nm",
     "x_cm-1",
@@ -116,6 +120,7 @@
     ORCA_UVVIS_SECTION,
     ORCA_EXCITED_STATES_SECTION,
     UNITS,
+    THRESHOLDS,
     AXIS_MODES,
     AXIS_DIRECTIONS,
     DEFAULTS,
