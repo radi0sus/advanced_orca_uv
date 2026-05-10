@@ -23,6 +23,9 @@
       rangeMax: getOptionalNumberValue("range-max"),
       
       assignmentDisplay: getCheckedRadioValue("assignment-display", DEFAULTS.assignmentDisplay),
+      assignmentSelectionMode: getCheckedRadioValue("assignment-selection-mode", DEFAULTS.assignmentSelectionMode),
+      assignmentThresholdPercent: getNumberValue("assignment-threshold-slider", DEFAULTS.assignmentThresholdPercent),
+      showTransitionLabels: getCheckboxValue("show-transition-labels", DEFAULTS.showTransitionLabels),
 
       fwhmCm1: getNumberValue("fwhm-slider", DEFAULTS.fwhmCm1),
 
@@ -61,6 +64,9 @@
     setText("spectrum-shift-value", `${formatSignedInteger(uiState.spectrumShiftCm1)} cm⁻¹`);
     setText("peak-height-value", `${formatInteger(uiState.peakHeightPercent)} %`);
     setText("peak-distance-value", `${formatInteger(uiState.peakDistanceCm1)} cm⁻¹`);
+    
+    setText("assignment-threshold-value", `${formatInteger(uiState.assignmentThresholdPercent)} %`);
+    updateAssignmentThresholdControl(uiState);
 
     setText("plot-axis-pill", `X: ${axisLabel(uiState.xAxis)}`);
     setText("plot-fwhm-pill", `FWHM: ${formatInteger(uiState.fwhmCm1)} cm⁻¹`);
@@ -175,7 +181,7 @@
 
     tableBody.innerHTML = transitions
       .map((transition) => {
-        const stateLabel = escapeHtml(transition.label ?? `S${transition.state ?? "?"}`);
+        const stateLabel = escapeHtml(getTransitionStateLabel(transition, uiState));
         const wavelength = formatNumber(transition.wavelengthNm, 1);
         const energyEv = formatNumber(transition.energyEv, 3);
         const energyCm1 = formatNumber(transition.energyCm1, 1);
@@ -209,20 +215,56 @@
     return "";
   }
 
-  function getTransitionAssignmentText(transition, uiState) {
-    const mode = uiState?.assignmentDisplay || DEFAULTS.assignmentDisplay;
+  function getTransitionStateLabel(transition, uiState) {
+    const baseLabel = transition?.label ?? `S${transition?.state ?? "?"}`;
   
-    if (mode === "orca" || mode === "orca-orbitals") {
-      return summarizeAssignmentField(transition?.excitedState?.assignments, "transition");
+    if (!uiState?.showTransitionLabels) {
+      return baseLabel;
     }
   
-    return transition?.assignment || "—";
+    const transitionLabel = transition?.transitionLabel;
+  
+    if (
+      !transitionLabel ||
+      transitionLabel === "—" ||
+      transitionLabel === baseLabel
+    ) {
+      return baseLabel;
+    }
+  
+    return `${baseLabel} (${transitionLabel})`;
   }
   
-  function summarizeAssignmentField(assignments, field) {
+  function getTransitionAssignmentText(transition, uiState) {
+    const displayMode = uiState?.assignmentDisplay || DEFAULTS.assignmentDisplay;
+    const selectionMode = uiState?.assignmentSelectionMode || DEFAULTS.assignmentSelectionMode;
+  
+    const field = displayMode === "orca" || displayMode === "orca-orbitals"
+      ? "transition"
+      : "assignment";
+  
+    const assignments = transition?.excitedState?.assignments;
+  
+    if (selectionMode === "manual") {
+      return summarizeAssignmentFieldManual(assignments, field, uiState);
+    }
+  
+    return summarizeAssignmentFieldAuto(assignments, field);
+  }
+  
+  function summarizeAssignmentFieldAuto(assignments, field) {
     if (!Array.isArray(assignments) || assignments.length === 0) {
       return "—";
     }
+  
+    /*
+      Auto mode follows the old main-assignment mechanism:
+  
+        1. keep assignments with weight >= PARSER.mainAssignmentWeightThreshold
+        2. sort by descending weight
+        3. keep at most PARSER.maxMainAssignments
+        4. if none pass the threshold, show the strongest assignment as fallback
+    */
   
     const threshold = Number.isFinite(PARSER?.mainAssignmentWeightThreshold)
       ? PARSER.mainAssignmentWeightThreshold
@@ -252,8 +294,8 @@
       .map((assignment) => {
         const value =
           assignment?.[field] ||
-          assignment?.transition ||
           assignment?.assignment ||
+          assignment?.transition ||
           "—";
   
         return `${value} (${formatAssignmentPercent(assignment.weight)})`;
@@ -261,6 +303,40 @@
       .join(", ");
   }
   
+  function summarizeAssignmentFieldManual(assignments, field, uiState) {
+    if (!Array.isArray(assignments) || assignments.length === 0) {
+      return "—";
+    }
+  
+    const rawThresholdPercent = Number.isFinite(uiState?.assignmentThresholdPercent)
+      ? uiState.assignmentThresholdPercent
+      : DEFAULTS.assignmentThresholdPercent;
+  
+    const thresholdPercent = Math.min(100, Math.max(0, rawThresholdPercent));
+    const threshold = thresholdPercent / 100;
+  
+    const selected = assignments
+      .filter((assignment) => Number.isFinite(assignment.weight))
+      .filter((assignment) => assignment.weight >= threshold)
+      .sort((a, b) => b.weight - a.weight);
+  
+    if (selected.length === 0) {
+      return "—";
+    }
+  
+    return selected
+      .map((assignment) => {
+        const value =
+          assignment?.[field] ||
+          assignment?.assignment ||
+          assignment?.transition ||
+          "—";
+  
+        return `${value} (${formatAssignmentPercent(assignment.weight)})`;
+      })
+      .join(", ");
+  }
+    
   function formatAssignmentPercent(value) {
     if (!Number.isFinite(value)) {
       return "—";
@@ -706,6 +782,17 @@
       default:
         return "nm";
     }
+  }
+
+  function updateAssignmentThresholdControl(uiState) {
+    const slider = document.getElementById("assignment-threshold-slider");
+  
+    if (!slider) {
+      return;
+    }
+  
+    const isManual = uiState?.assignmentSelectionMode === "manual";
+    slider.disabled = !isManual;
   }
 
   function updateRangeValidation(uiState) {

@@ -83,6 +83,9 @@
     baselineCorrection: false,
     experimentalStyle: "line-fill",
     assignmentDisplay: "homo-lumo",
+    assignmentSelectionMode: "auto",
+    assignmentThresholdPercent: 5,
+    showTransitionLabels: false,
   };
 
   const PARSER = {

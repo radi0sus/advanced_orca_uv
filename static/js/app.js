@@ -139,6 +139,9 @@
       "#baseline-correction",
       'input[name="experimental-style"]',
       'input[name="assignment-display"]',
+      'input[name="assignment-selection-mode"]',
+      "#assignment-threshold-slider",
+      "#show-transition-labels",
     ].join(",");
 
     document.querySelectorAll(controlSelector).forEach((element) => {

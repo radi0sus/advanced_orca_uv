@@ -359,6 +359,41 @@
               <label for="assignment-display-orca">ORCA orbitals</label>
             </div>
           </div>
+        
+          <div class="field">
+            <div class="field-label">Assignment selection</div>
+            <div class="segmented two" role="radiogroup" aria-label="Assignment selection">
+              <input id="assignment-selection-auto" name="assignment-selection-mode" type="radio" value="auto" checked />
+              <label for="assignment-selection-auto">Auto</label>
+          
+              <input id="assignment-selection-manual" name="assignment-selection-mode" type="radio" value="manual" />
+              <label for="assignment-selection-manual">Manual</label>
+            </div>
+          </div>        
+        
+          <div class="field">
+            <div class="label-row">
+              <label for="assignment-threshold-slider">Assignment threshold / %</label>
+              <span class="field-value" id="assignment-threshold-value">5 %</span>
+            </div>
+            <input id="assignment-threshold-slider" class="range-input" type="range" min="0" max="100" step="1" value="5" />
+            <div class="range-meta">
+              <span>0</span>
+              <span>100</span>
+            </div>
+          </div>
+        
+          <div class="field">
+            <div class="switch-row">
+              <div class="switch-text">
+                <span class="switch-title">Show transition labels</span>
+              </div>
+              <label class="switch" for="show-transition-labels">
+                <input id="show-transition-labels" type="checkbox" />
+                <span></span>
+              </label>
+            </div>
+          </div>
         </section>        
 
         <section class="control-section" aria-labelledby="section-experimental">

@@ -867,6 +867,15 @@ tr.fosc-significant td:first-child {
   border-left: 3px solid color-mix(in srgb, var(--warning) 65%, var(--border));
 }
 
+table[aria-label="Parsed UV-Vis transitions"] th:last-child,
+#transitions-table-body td:last-child {
+  text-align: right;
+  white-space: normal;
+  min-width: 260px;
+  max-width: 640px;
+  overflow-wrap: anywhere;
+}
+
 /* Empty states */
 
 .empty-state {
