@@ -20,492 +20,490 @@
             <p class="brand-subtitle">Interactive local spectrum viewer</p>
           </div>
         </header>
-
-        <section class="control-section" aria-labelledby="section-files">
-          <div class="control-section-header">
+    
+        <details class="control-section sidebar-collapsible" aria-labelledby="section-files" open>
+          <summary class="control-section-header sidebar-summary">
             <h2 id="section-files">File</h2>
-    <!--       <span class="section-badge">Local only</span> -->
-          </div>
-
-          <div class="field">
-            <label for="orca-file">ORCA output file</label>
-            <input id="orca-file" class="file-input" type="file" accept=".out,.log,.txt" />
-    <!--      <p class="field-hint">Local file processing.</p> -->
-          </div>
-
-          <div class="status-card" id="file-status">
-            <div class="status-line">
-              <span class="status-dot warning"></span>
-              <span>No ORCA UV-Vis data loaded yet.</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="control-section" aria-labelledby="section-display">
-          <div class="control-section-header">
-            <h2 id="section-display">Display</h2>
-          </div>
-
-          <div class="field">
-            <div class="field-label">X-axis</div>
-            <div class="segmented three" role="radiogroup" aria-label="X-axis">
-              <input id="x-axis-nm" name="x-axis" type="radio" value="nm" checked />
-              <label for="x-axis-nm">λ / nm</label>
-
-              <input id="x-axis-ev" name="x-axis" type="radio" value="ev" />
-              <label for="x-axis-ev">E / eV</label>
-
-              <input id="x-axis-cm-1" name="x-axis" type="radio" value="cm-1" />
-              <label for="x-axis-cm-1">E / cm⁻¹</label>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="field-label">Axis direction</div>
-            <div class="segmented two" role="radiogroup" aria-label="Axis direction">
-              <input id="axis-normal" name="axis-direction" type="radio" value="normal" checked />
-              <label for="axis-normal">Low → High</label>
-
-              <input id="axis-reversed" name="axis-direction" type="radio" value="reversed" />
-              <label for="axis-reversed">High → Low</label>
-            </div>
-          </div>
-
-          <div class="field-row">
+          </summary>
+    
+          <div class="sidebar-section-body">
             <div class="field">
-              <label for="range-min">Range min</label>
-              <input id="range-min" class="number-input" min="0" type="number" placeholder="auto" />
+              <label for="orca-file">ORCA output file</label>
+              <input id="orca-file" class="file-input" type="file" accept=".out,.log,.txt" />
             </div>
 
-            <div class="field">
-              <label for="range-max">Range max</label>
-              <input id="range-max" class="number-input" min="0" type="number" placeholder="auto" />
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Auto range</span>
-        <!--    <span class="switch-subtitle">Use transition range plus margins.</span> -->
+            <div class="status-card" id="file-status">
+              <div class="status-line">
+                <span class="status-dot warning"></span>
+                <span>No ORCA UV-Vis data loaded yet.</span>
               </div>
-              <label class="switch" for="auto-range">
-                <input id="auto-range" type="checkbox" checked />
-                <span></span>
-              </label>
             </div>
           </div>
-        </section>
+        </details>
+    
+        <details class="control-section sidebar-collapsible" aria-labelledby="section-display" open>
+          <summary class="control-section-header sidebar-summary">
+            <h2 id="section-display">Display</h2>
+          </summary>
+    
+          <div class="sidebar-section-body">
+            <div class="field">
+              <div class="field-label">X-axis</div>
+              <div class="segmented three" role="radiogroup" aria-label="X-axis">
+                <input id="x-axis-nm" name="x-axis" type="radio" value="nm" checked />
+                <label for="x-axis-nm">λ / nm</label>
+    
+                <input id="x-axis-ev" name="x-axis" type="radio" value="ev" />
+                <label for="x-axis-ev">E / eV</label>
+    
+                <input id="x-axis-cm-1" name="x-axis" type="radio" value="cm-1" />
+                <label for="x-axis-cm-1">E / cm⁻¹</label>
+              </div>
+            </div>
 
-        <section class="control-section" aria-labelledby="section-spectrum">
-          <div class="control-section-header">
-            <h2 id="section-spectrum">Spectrum</h2>
-    <!--    <span class="section-badge">cm⁻¹ core</span> -->
+            <div class="field">
+              <div class="field-label">Axis direction</div>
+              <div class="segmented two" role="radiogroup" aria-label="Axis direction">
+                <input id="axis-normal" name="axis-direction" type="radio" value="normal" checked />
+                <label for="axis-normal">Low → High</label>
+    
+                <input id="axis-reversed" name="axis-direction" type="radio" value="reversed" />
+                <label for="axis-reversed">High → Low</label>
+              </div>
+            </div>
+    
+            <div class="field-row">
+              <div class="field">
+                <label for="range-min">Range min</label>
+                <input id="range-min" class="number-input" min="0" type="number" placeholder="auto" />
+              </div>
+    
+              <div class="field">
+                <label for="range-max">Range max</label>
+                <input id="range-max" class="number-input" min="0" type="number" placeholder="auto" />
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Auto range</span>
+                </div>
+                <label class="switch" for="auto-range">
+                  <input id="auto-range" type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+            </div>
           </div>
-    <!--
-          <div class="field">
+        </details>
+
+        <details class="control-section sidebar-collapsible" aria-labelledby="section-spectrum" open>
+          <summary class="control-section-header sidebar-summary">
+            <h2 id="section-spectrum">Spectrum</h2>
+          </summary>
+    
+          <div class="sidebar-section-body">
+            <div class="field">
+              <div class="label-row">
+                <label for="fwhm-slider">FWHM / cm⁻¹</label>
+                <span class="field-value" id="fwhm-value">1000 cm⁻¹</span>
+              </div>
+              <input id="fwhm-slider" class="range-input" type="range" min="100" max="5000" step="50" value="1000" />
+              <div class="range-meta">
+                <span>100</span>
+                <span>5000</span>
+              </div>
+              <p class="field-hint">
+                Calculated in cm⁻¹ axis and converted for display.
+              </p>
+    
+              <div class="readout-box" id="fwhm-readout">
+                <div class="readout-row">
+                  <span>Internal width</span>
+                  <strong>1000 cm⁻¹</strong>
+                </div>
+                <div class="readout-row">
+                  <span>Approx. at 400 nm</span>
+                  <strong>≈ 16.0 nm</strong>
+                </div>
+                <div class="readout-row">
+                  <span>Approx. energy width</span>
+                  <strong>≈ 0.124 eV</strong>
+                </div>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Normalize spectrum</span>
+                  <span class="switch-subtitle">Normalize max. intensity to 1.</span>
+                </div>
+                <label class="switch" for="normalize-spectrum">
+                  <input id="normalize-spectrum" type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="label-row">
+                <label for="scale-factor-slider">Scale factor</label>
+                <span class="field-value" id="scale-factor-value">1.0</span>
+              </div>
+              <input id="scale-factor-slider" class="range-input" type="range" min="0.1" max="5" step="0.1" value="1" />
+              <div class="range-meta">
+                <span>0.1</span>
+                <span>5.0</span>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="label-row">
+                <label for="spectrum-shift-slider">Spectrum shift / cm⁻¹</label>
+                <span class="field-value" id="spectrum-shift-value">0 cm⁻¹</span>
+              </div>
+              <input id="spectrum-shift-slider" class="range-input" type="range" min="-5000" max="5000" step="50" value="0" />
+              <div class="range-meta">
+                <span>-5000</span>
+                <span>0</span>
+                <span>5000</span>
+              </div>
+              <p class="field-hint">
+                Plot shift only.
+              </p>
+            </div>
+          </div>
+        </details>
+
+        <details class="control-section sidebar-collapsible" aria-labelledby="section-plot-elements">
+          <summary class="control-section-header sidebar-summary">
+            <h2 id="section-plot-elements">Plot elements</h2>
+          </summary>
+    
+          <div class="sidebar-section-body">
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Convoluted spectrum</span>
+                  <span class="switch-subtitle">Show summed Gaussian spectrum.</span>
+                </div>
+                <label class="switch" for="show-spectrum">
+                  <input id="show-spectrum" type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Fill spectrum</span>
+                  <span class="switch-subtitle">Fill area below the calculated spectrum.</span>
+                </div>
+                <label class="switch" for="show-spectrum-fill">
+                  <input id="show-spectrum-fill" type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Stick spectrum</span>
+                  <span class="switch-subtitle">Show stick spectrum.</span>
+                </div>
+                <label class="switch" for="show-sticks">
+                  <input id="show-sticks" type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">State labels</span>
+                  <span class="switch-subtitle">Annotate electronic states.</span>
+                </div>
+                <label class="switch" for="show-state-labels">
+                  <input id="show-state-labels" type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Single Gaussian bands</span>
+                  <span class="switch-subtitle">Show individual broadened transitions.</span>
+                </div>
+                <label class="switch" for="show-single-gaussians">
+                  <input id="show-single-gaussians" type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Gaussian band areas</span>
+                  <span class="switch-subtitle">Fill individual Gaussian bands.</span>
+                </div>
+                <label class="switch" for="show-gaussian-areas">
+                  <input id="show-gaussian-areas" type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Peak labels</span>
+                  <span class="switch-subtitle">Annotate peaks.</span>
+                </div>
+                <label class="switch" for="show-peak-labels">
+                  <input id="show-peak-labels" type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Grid</span>
+                  <span class="switch-subtitle">Show grid.</span>
+                </div>
+                <label class="switch" for="show-grid">
+                  <input id="show-grid" type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </details>
+    
+        <details class="control-section sidebar-collapsible" aria-labelledby="section-peaks">
+          <summary class="control-section-header sidebar-summary">
+            <h2 id="section-peaks">Peak detection</h2>
+          </summary>
+    
+          <div class="sidebar-section-body">
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Detect peaks</span>
+                  <span class="switch-subtitle">Find peaks in normalized spectrum.</span>
+                </div>
+                <label class="switch" for="detect-peaks">
+                  <input id="detect-peaks" type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="label-row">
+                <label for="peak-height-slider">Minimum height</label>
+                <span class="field-value" id="peak-height-value">2 %</span>
+              </div>
+              <input id="peak-height-slider" class="range-input" type="range" min="0" max="100" step="1" value="2" />
+              <div class="range-meta">
+                <span>0</span>
+                <span>100</span>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="label-row">
+                <label for="peak-distance-slider">Minimum distance</label>
+                <span class="field-value" id="peak-distance-value">10 cm⁻¹</span>
+              </div>
+              <input id="peak-distance-slider" class="range-input" type="range" min="0" max="10000" step="10" value="10" />
+              <div class="range-meta">
+                <span>0</span>
+                <span>10000</span>
+              </div>
+            </div>
+          </div>
+        </details>
+    
+        <details class="control-section sidebar-collapsible" aria-labelledby="section-tables">
+          <summary class="control-section-header sidebar-summary">
+            <h2 id="section-tables">Tables</h2>
+          </summary>
+    
+          <div class="sidebar-section-body">
+            <div class="field">
+              <div class="field-label">Assignment display</div>
+              <div class="segmented two" role="radiogroup" aria-label="Assignment display">
+                <input id="assignment-display-homo-lumo" name="assignment-display" type="radio" value="homo-lumo" checked />
+                <label for="assignment-display-homo-lumo">HOMO/LUMO</label>
+    
+                <input id="assignment-display-orca" name="assignment-display" type="radio" value="orca" />
+                <label for="assignment-display-orca">ORCA orbitals</label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="field-label">Assignment selection</div>
+              <div class="segmented two" role="radiogroup" aria-label="Assignment selection">
+                <input id="assignment-selection-auto" name="assignment-selection-mode" type="radio" value="auto" checked />
+                <label for="assignment-selection-auto">Auto</label>
+    
+                <input id="assignment-selection-manual" name="assignment-selection-mode" type="radio" value="manual" />
+                <label for="assignment-selection-manual">Manual</label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="label-row">
+                <label for="assignment-threshold-slider">Assignment threshold / %</label>
+                <span class="field-value" id="assignment-threshold-value">5 %</span>
+              </div>
+              <input id="assignment-threshold-slider" class="range-input" type="range" min="0" max="100" step="1" value="5" />
+              <div class="range-meta">
+                <span>0</span>
+                <span>100</span>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Show transition labels</span>
+                </div>
+                <label class="switch" for="show-transition-labels">
+                  <input id="show-transition-labels" type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="control-section sidebar-collapsible" aria-labelledby="section-experimental">
+          <summary class="control-section-header sidebar-summary">
+            <h2 id="section-experimental">Experimental overlay</h2>
+          </summary>
+    
+          <div class="sidebar-section-body">
+            <div class="field">
+              <label for="experimental-file">Experimental CSV</label>
+              <input id="experimental-file" class="file-input" type="file" accept=".csv,.txt,.dat" />
+              <p class="field-hint">
+                2 columns: x = wavelength in nm  y = intensity.
+              </p>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Show overlay</span>
+                  <span class="switch-subtitle">Display loaded experimental CSV data.</span>
+                </div>
+                <label class="switch" for="show-experimental">
+                  <input id="show-experimental" type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <!--
+            <div class="field">
+              <label for="experimental-y-type">Experimental y-type</label>
+              <select id="experimental-y-type" class="select-input">
+                <option value="absorbance" selected>Absorbance</option>
+                <option value="transmittance">Transmittance / %</option>
+                <option value="intensity">Intensity</option>
+              </select>
+            </div>
+            -->
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Normalize overlay</span>
+                  <span class="switch-subtitle">Scale exp. data.</span>
+                </div>
+                <label class="switch" for="normalize-experimental">
+                  <input id="normalize-experimental" type="checkbox" checked />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="switch-row">
+                <div class="switch-text">
+                  <span class="switch-title">Baseline correction</span>
+                  <span class="switch-subtitle">Subtract exp. baseline before scaling.</span>
+                </div>
+                <label class="switch" for="baseline-correction">
+                  <input id="baseline-correction" type="checkbox" />
+                  <span></span>
+                </label>
+              </div>
+            </div>
+    
+            <div class="field">
+              <div class="field-label">Overlay style</div>
+              <div class="segmented two" role="radiogroup" aria-label="Overlay style">
+                <input id="experimental-style-line-fill" name="experimental-style" type="radio" value="line-fill" checked />
+                <label for="experimental-style-line-fill">Filled line</label>
+    
+                <input id="experimental-style-line" name="experimental-style" type="radio" value="line" />
+                <label for="experimental-style-line">Line</label>
+              </div>
+            </div>
+          </div>
+        </details>
+    
+        <details class="control-section sidebar-collapsible" aria-labelledby="section-export">
+          <summary class="control-section-header sidebar-summary">
+            <h2 id="section-export">Export</h2>
+          </summary>
+    
+          <div class="sidebar-section-body">
+            <div class="button-row">
+              <button id="export-png" class="btn primary" type="button">Export PNG</button>
+              <button id="export-csv" class="btn" type="button">Export CSV</button>
+            </div>
+    
             <div class="readout-box">
               <div class="readout-row">
-                <span>Broadening</span>
-                <strong>Gaussian</strong>
+                <span>CSV columns</span>
+                <strong>5</strong>
               </div>
-              <div class="readout-row">
-                <span>Internal domain</span>
-                <strong>cm⁻¹</strong>
-              </div>
-            </div>
-            <p class="field-hint">
-              The spectrum is calculated on a cm⁻¹ energy axis and converted for display.
-            </p>
-          </div>
-    -->
-          <div class="field">
-            <div class="label-row">
-              <label for="fwhm-slider">FWHM / cm⁻¹</label>
-              <span class="field-value" id="fwhm-value">1000 cm⁻¹</span>
-            </div>
-            <input id="fwhm-slider" class="range-input" type="range" min="100" max="5000" step="50" value="1000" />
-            <div class="range-meta">
-              <span>100</span>
-              <span>5000</span>
-            </div>
-            <p class="field-hint">
-              Calculated in cm⁻¹ axis and converted for display.
-            </p>
-            <div class="readout-box" id="fwhm-readout">
-              <div class="readout-row">
-                <span>Internal width</span>
-                <strong>1000 cm⁻¹</strong>
-              </div>
-              <div class="readout-row">
-                <span>Approx. at 400 nm</span>
-                <strong>≈ 16.0 nm</strong>
-              </div>
-              <div class="readout-row">
-                <span>Approx. energy width</span>
-                <strong>≈ 0.124 eV</strong>
-              </div>
+              <p class="field-hint no-margin">
+                x_nm, x_cm-1, x_eV, intensity, intensity_norm
+              </p>
             </div>
           </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Normalize spectrum</span>
-                <span class="switch-subtitle">Normalize max. intensity to 1.</span>
-              </div>
-              <label class="switch" for="normalize-spectrum">
-                <input id="normalize-spectrum" type="checkbox" checked />
-                <span></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="label-row">
-              <label for="scale-factor-slider">Scale factor</label>
-              <span class="field-value" id="scale-factor-value">1.0</span>
-            </div>
-            <input id="scale-factor-slider" class="range-input" type="range" min="0.1" max="5" step="0.1" value="1" />
-            <div class="range-meta">
-              <span>0.1</span>
-              <span>5.0</span>
-            </div>
-          </div>
-          
-          <div class="field">
-            <div class="label-row">
-              <label for="spectrum-shift-slider">Spectrum shift / cm⁻¹</label>
-              <span class="field-value" id="spectrum-shift-value">0 cm⁻¹</span>
-            </div>
-            <input id="spectrum-shift-slider" class="range-input" type="range" min="-5000" max="5000" step="50" value="0" />
-            <div class="range-meta">
-              <span>-5000</span>
-              <span>0</span>
-              <span>5000</span>
-            </div>
-            <p class="field-hint">
-              Plot shift only.
-            </p>
-          </div>   
-                    
-        </section>     
-
-        <section class="control-section" aria-labelledby="section-plot-elements">
-          <div class="control-section-header">
-            <h2 id="section-plot-elements">Plot elements</h2>
-          </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Convoluted spectrum</span>
-                <span class="switch-subtitle">Show summed Gaussian spectrum.</span>
-              </div>
-              <label class="switch" for="show-spectrum">
-                <input id="show-spectrum" type="checkbox" checked />
-                <span></span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Fill spectrum</span>
-                <span class="switch-subtitle">Fill area below the calculated spectrum.</span>
-              </div>
-              <label class="switch" for="show-spectrum-fill">
-                <input id="show-spectrum-fill" type="checkbox" checked />
-                <span></span>
-              </label>
-            </div>
-          </div>          
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Stick spectrum</span>
-                <span class="switch-subtitle">Show stick spectrum.</span>
-              </div>
-              <label class="switch" for="show-sticks">
-                <input id="show-sticks" type="checkbox" checked />
-                <span></span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">State labels</span>
-                <span class="switch-subtitle">Annotate electronic states.</span>
-              </div>
-              <label class="switch" for="show-state-labels">
-                <input id="show-state-labels" type="checkbox" />
-                <span></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Single Gaussian bands</span>
-                <span class="switch-subtitle">Show individual broadened transitions.</span>
-              </div>
-              <label class="switch" for="show-single-gaussians">
-                <input id="show-single-gaussians" type="checkbox" />
-                <span></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Gaussian band areas</span>
-                <span class="switch-subtitle">Fill individual Gaussian bands.</span>
-              </div>
-              <label class="switch" for="show-gaussian-areas">
-                <input id="show-gaussian-areas" type="checkbox" />
-                <span></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Peak labels</span>
-                <span class="switch-subtitle">Annotate peaks.</span>
-              </div>
-              <label class="switch" for="show-peak-labels">
-                <input id="show-peak-labels" type="checkbox" checked />
-                <span></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Grid</span>
-                <span class="switch-subtitle">Show grid.</span>
-              </div>
-              <label class="switch" for="show-grid">
-                <input id="show-grid" type="checkbox" />
-                <span></span>
-              </label>
-            </div>
-          </div>
-        </section>
-
-        <section class="control-section" aria-labelledby="section-peaks">
-          <div class="control-section-header">
-            <h2 id="section-peaks">Peak detection</h2>
-          </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Detect peaks</span>
-                <span class="switch-subtitle">Find peaks in normalized spectrum.</span>
-              </div>
-              <label class="switch" for="detect-peaks">
-                <input id="detect-peaks" type="checkbox" checked />
-                <span></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="label-row">
-              <label for="peak-height-slider">Minimum height</label>
-              <span class="field-value" id="peak-height-value">2 %</span>
-            </div>
-            <input id="peak-height-slider" class="range-input" type="range" min="0" max="100" step="1" value="2" />
-            <div class="range-meta">
-              <span>0</span>
-              <span>100</span>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="label-row">
-              <label for="peak-distance-slider">Minimum distance</label>
-              <span class="field-value" id="peak-distance-value">10 cm⁻¹</span>
-            </div>
-            <input id="peak-distance-slider" class="range-input" type="range" min="0" max="10000" step="10" value="10" />
-            <div class="range-meta">
-              <span>0</span>
-              <span>10000</span>
-            </div>
-          </div>
-        </section>
-        
-        <section class="control-section" aria-labelledby="section-tables">
-          <div class="control-section-header">
-            <h2 id="section-tables">Tables</h2>
-          </div>
-        
-          <div class="field">
-            <div class="field-label">Assignment display</div>
-            <div class="segmented two" role="radiogroup" aria-label="Assignment display">
-              <input id="assignment-display-homo-lumo" name="assignment-display" type="radio" value="homo-lumo" checked />
-              <label for="assignment-display-homo-lumo">HOMO/LUMO</label>
-        
-              <input id="assignment-display-orca" name="assignment-display" type="radio" value="orca" />
-              <label for="assignment-display-orca">ORCA orbitals</label>
-            </div>
-          </div>
-        
-          <div class="field">
-            <div class="field-label">Assignment selection</div>
-            <div class="segmented two" role="radiogroup" aria-label="Assignment selection">
-              <input id="assignment-selection-auto" name="assignment-selection-mode" type="radio" value="auto" checked />
-              <label for="assignment-selection-auto">Auto</label>
-          
-              <input id="assignment-selection-manual" name="assignment-selection-mode" type="radio" value="manual" />
-              <label for="assignment-selection-manual">Manual</label>
-            </div>
-          </div>        
-        
-          <div class="field">
-            <div class="label-row">
-              <label for="assignment-threshold-slider">Assignment threshold / %</label>
-              <span class="field-value" id="assignment-threshold-value">5 %</span>
-            </div>
-            <input id="assignment-threshold-slider" class="range-input" type="range" min="0" max="100" step="1" value="5" />
-            <div class="range-meta">
-              <span>0</span>
-              <span>100</span>
-            </div>
-          </div>
-        
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Show transition labels</span>
-              </div>
-              <label class="switch" for="show-transition-labels">
-                <input id="show-transition-labels" type="checkbox" />
-                <span></span>
-              </label>
-            </div>
-          </div>
-        </section>        
-
-        <section class="control-section" aria-labelledby="section-experimental">
-          <div class="control-section-header">
-            <h2 id="section-experimental">Experimental overlay</h2>
-          </div>
-
-          <div class="field">
-            <label for="experimental-file">Experimental CSV</label>
-            <input id="experimental-file" class="file-input" type="file" accept=".csv,.txt,.dat" />
-            <p class="field-hint">
-              2 columns: x = wavelength in nm  y = intensity.
-            </p>
-          </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Show overlay</span>
-                <span class="switch-subtitle">Display loaded experimental CSV data.</span>
-              </div>
-              <label class="switch" for="show-experimental">
-                <input id="show-experimental" type="checkbox" />
-                <span></span>
-              </label>
-            </div>
-          </div>
-
-<!--
-          <div class="field">
-            <label for="experimental-y-type">Experimental y-type</label>
-            <select id="experimental-y-type" class="select-input">
-              <option value="absorbance" selected>Absorbance</option>
-              <option value="transmittance">Transmittance / %</option>
-              <option value="intensity">Intensity</option>
-            </select>
-          </div>
--->
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Normalize overlay</span>
-                <span class="switch-subtitle">Scale exp. data.</span>
-              </div>
-              <label class="switch" for="normalize-experimental">
-                <input id="normalize-experimental" type="checkbox" checked />
-                <span></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="switch-row">
-              <div class="switch-text">
-                <span class="switch-title">Baseline correction</span>
-                <span class="switch-subtitle">Subtract exp. baseline before scaling.</span>
-              </div>
-              <label class="switch" for="baseline-correction">
-                <input id="baseline-correction" type="checkbox" />
-                <span></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="field-label">Overlay style</div>
-            <div class="segmented two" role="radiogroup" aria-label="Overlay style">
-              <input id="experimental-style-line-fill" name="experimental-style" type="radio" value="line-fill" checked />
-              <label for="experimental-style-line-fill">Filled line</label>
-
-              <input id="experimental-style-line" name="experimental-style" type="radio" value="line" />
-              <label for="experimental-style-line">Line</label>
-            </div>
-          </div>
-        </section>
-
-        <section class="control-section" aria-labelledby="section-export">
-          <div class="control-section-header">
-            <h2 id="section-export">Export</h2>
-          </div>
-
-          <div class="button-row">
-            <button id="export-png" class="btn primary" type="button">Export PNG</button>
-            <button id="export-csv" class="btn" type="button">Export CSV</button>
-          </div>
-
-          <div class="readout-box">
-            <div class="readout-row">
-              <span>CSV columns</span>
-              <strong>5</strong>
-            </div>
-            <p class="field-hint no-margin">
-              x_nm, x_cm-1, x_eV, intensity, intensity_norm
-            </p>
-          </div>
-        </section>
-
-        <section class="control-section" aria-labelledby="section-app">
-          <div class="control-section-header">
+        </details>
+    
+        <details class="control-section sidebar-collapsible" aria-labelledby="section-app" open>
+          <summary class="control-section-header sidebar-summary">
             <h2 id="section-app">App</h2>
+          </summary>
+    
+          <div class="sidebar-section-body">
+            <div class="button-row">
+              <button id="reset-view" class="btn" type="button">Reset view</button>
+              <button id="clear-data" class="btn" type="button">Clear data</button>
+            </div>
+    
+            <p class="footer-note">
+              Runs locally in your browser. No data is uploaded.
+            </p>
           </div>
-
-          <div class="button-row">
-            <button id="reset-view" class="btn" type="button">Reset view</button>
-            <button id="clear-data" class="btn" type="button">Clear data</button>
-          </div>
-
-          <p class="footer-note">
-            Runs locally in your browser. No data is uploaded.
-          </p>
-        </section>
+        </details>
       </div>
     </aside>
 
