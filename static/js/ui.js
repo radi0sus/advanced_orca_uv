@@ -51,6 +51,8 @@
 
   function updateUiReadouts() {
     const uiState = getUiState();
+    
+    updateRangeValidation(uiState);
 
     setText("fwhm-value", `${formatInteger(uiState.fwhmCm1)} cm⁻¹`);
     setText("scale-factor-value", uiState.scaleFactor.toFixed(1));
@@ -629,6 +631,59 @@
         return "nm";
     }
   }
+
+  function updateRangeValidation(uiState) {
+    const rangeMinElement = document.getElementById("range-min");
+    const rangeMaxElement = document.getElementById("range-max");
+  
+    if (!rangeMinElement || !rangeMaxElement) {
+      return;
+    }
+  
+    const minValue = getOptionalNumberValue("range-min");
+    const maxValue = getOptionalNumberValue("range-max");
+  
+    const minInvalid = isInvalidRangeBoundary(minValue, uiState.xAxis);
+    const maxInvalid = isInvalidRangeBoundary(maxValue, uiState.xAxis);
+  
+    const equalInvalid =
+      !uiState.autoRange &&
+      Number.isFinite(minValue) &&
+      Number.isFinite(maxValue) &&
+      minValue === maxValue;
+  
+    setInputInvalid(rangeMinElement, minInvalid || equalInvalid);
+    setInputInvalid(rangeMaxElement, maxInvalid || equalInvalid);
+  }
+  
+  function isInvalidRangeBoundary(value, xAxis) {
+    if (value == null) {
+      return false;
+    }
+  
+    if (!Number.isFinite(value)) {
+      return true;
+    }
+  
+    switch (xAxis) {
+      case "nm":
+        return value <= 50;
+  
+      case "ev":
+      case "cm-1":
+      default:
+        return value <= 0;
+    }
+  }
+
+function setInputInvalid(element, invalid) {
+  element.classList.toggle("is-invalid", Boolean(invalid));
+
+  const field = element.closest(".field");
+  if (field) {
+    field.classList.toggle("has-invalid-input", Boolean(invalid));
+  }
+}
 
   function getCheckedRadioValue(name, fallback) {
     const element = document.querySelector(`input[name="${name}"]:checked`);

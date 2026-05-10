@@ -243,7 +243,8 @@
 
     switch (xAxis) {
       case "nm":
-        if (a <= 0 || b <= 0) return null;
+        //if (a <= 0 || b <= 0) return null;
+        if (a <= 50 || b <= 50) return null;
         cm1A = UNITS.NM_CM1_FACTOR / a;
         cm1B = UNITS.NM_CM1_FACTOR / b;
         break;

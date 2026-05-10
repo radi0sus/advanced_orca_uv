@@ -293,6 +293,16 @@ label,
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
+.number-input.is-invalid {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger-soft) 55%, var(--surface-soft));
+}
+
+.number-input.is-invalid:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
 /* Segmented controls */
 
 .segmented {
