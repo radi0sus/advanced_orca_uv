@@ -1089,7 +1089,7 @@
     return {
       responsive: true,
       displaylogo: false,
-      scrollZoom: true,
+      scrollZoom: false,
       modeBarButtonsToRemove: [
         "select2d",
         "lasso2d",

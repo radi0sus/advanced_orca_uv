@@ -43,6 +43,7 @@
     );
 
     return distanceFiltered
+      .map((peak) => enrichPeakWithEpsilon(peak, spectrum, options))
       .sort((a, b) => a.wavelengthNm - b.wavelengthNm)
       .map((peak, index) => ({
         ...peak,
@@ -297,7 +298,72 @@
       intensityScaled,
       intensityNorm,
       relativeIntensityPercent: intensityNorm * 100,
+      epsilon: NaN,
+      logEpsilon: NaN,
     };
+  }
+
+  function enrichPeakWithEpsilon(peak, spectrum, options = {}) {
+    if (!peak) {
+      return peak;
+    }
+
+    const epsilon = calculatePeakEpsilon(peak, spectrum, options);
+    const logEpsilon = Number.isFinite(epsilon) && epsilon > 0
+      ? Math.log10(epsilon)
+      : NaN;
+
+    return {
+      ...peak,
+      epsilon,
+      logEpsilon,
+    };
+  }
+
+  function calculatePeakEpsilon(peak, spectrum, options = {}) {
+    const spectrumModule = window.OrcaUV.Spectrum || {};
+    const calculateEpsilonAtCm1 = spectrumModule.calculateEpsilonAtCm1;
+
+    if (typeof calculateEpsilonAtCm1 !== "function") {
+      return NaN;
+    }
+
+    const transitions = Array.isArray(spectrum?.transitions)
+      ? spectrum.transitions
+      : [];
+
+    const energyCm1 = Number(peak?.energyCm1);
+    const widthCm1 = getSpectrumWidthCm1(spectrum, options);
+
+    if (
+      transitions.length === 0 ||
+      !Number.isFinite(energyCm1) ||
+      !Number.isFinite(widthCm1) ||
+      widthCm1 <= 0
+    ) {
+      return NaN;
+    }
+
+    return calculateEpsilonAtCm1(transitions, energyCm1, widthCm1);
+  }
+
+  function getSpectrumWidthCm1(spectrum, options = {}) {
+    const candidates = [
+      spectrum?.fwhmCm1,
+      options?.fwhmCm1,
+      options?.widthCm1,
+      options?.linewidthCm1,
+    ];
+
+    for (const value of candidates) {
+      const number = Number(value);
+
+      if (Number.isFinite(number) && number > 0) {
+        return number;
+      }
+    }
+
+    return NaN;
   }
 
   function getMinimumHeightPercent(options) {

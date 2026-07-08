@@ -31,6 +31,25 @@
     NM_CM1_FACTOR: 1.0e7,
   };
 
+  /*
+    Spectroscopy constants.
+
+    OSC_STRENGTH_TO_EPSILON_AREA converts oscillator strength f to the
+    integrated decadic molar extinction coefficient area:
+
+      ∫ ε(ν~) dν~ ≈ 2.315 × 10^8 · f
+
+    with:
+      ε in L mol⁻¹ cm⁻¹ = M⁻¹ cm⁻¹
+      ν~ in cm⁻¹
+
+    Based on:
+      f ≈ 4.32 × 10⁻⁹ ∫ ε(ν~) dν~
+  */
+  const SPECTROSCOPY = {
+    OSC_STRENGTH_TO_EPSILON_AREA: 2.315e8,
+  };
+
   const AXIS_MODES = {
     WAVELENGTH_NM: "nm",
     ENERGY_EV: "ev",
@@ -124,6 +143,7 @@
     ORCA_UVVIS_SECTION,
     ORCA_EXCITED_STATES_SECTION,
     UNITS,
+    SPECTROSCOPY,
     THRESHOLDS,
     AXIS_MODES,
     AXIS_DIRECTIONS,

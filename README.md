@@ -1,5 +1,5 @@
 > [!TIP]
-> **Advanced ORCA UV-Vis Viewer** is available as a static web app with interactive Plotly spectra, local ORCA output parsing, TD-DFT/TDA excited-state assignments, HOMO/LUMO mapping, experimental CSV overlay, peak labels, and PNG/CSV/Markdown export.  
+> **Advanced ORCA UV-Vis Viewer** is available as a static web app with interactive Plotly spectra, local ORCA output parsing, TD-DFT/TDA excited-state assignments, HOMO/LUMO mapping, experimental CSV overlay, peak labels, molar-extinction estimates for detected peaks, and PNG/CSV/Markdown export.  
 > 👉 Try it here: https://radi0sus.github.io/advanced_orca_uv/  
 > 👉 Original CLI tool: https://github.com/radi0sus/orca_uv
 
@@ -16,9 +16,10 @@ This version keeps the main idea of the CLI tool:
 - extract the UV-Vis absorption spectrum,
 - combine oscillator-strength sticks with a Gaussian-broadened spectrum,
 - detect and label peaks,
+- estimate molar extinction coefficients for detected peaks,
 - export the resulting spectrum.
 
-The web app extends this workflow with interactive visualization, TD-DFT/TDA excited-state assignment analysis, HOMO/LUMO mapping, experimental overlay support, and browser-based export.
+The web app extends this workflow with interactive visualization, TD-DFT/TDA excited-state assignment analysis, HOMO/LUMO mapping, experimental overlay support, peak detection, peak labels, molar-extinction estimates, and browser-based export.
 
 Everything runs **locally in the browser**.
 
@@ -69,6 +70,40 @@ The calculated spectrum is broadened on an internal `cm⁻¹` energy grid and co
 
 The broadening follows the historical behavior of the original Python tool.
 
+The Gaussian band shape used for the displayed calculated spectrum is
+
+$$
+I(\tilde{\nu}) =
+f \cdot
+\exp\left[
+-\ln(2)
+\left(
+\frac{\tilde{\nu}_0 - \tilde{\nu}}{w}
+\right)^2
+\right]
+$$
+
+where:
+
+- $\tilde{\nu}$ is the wavenumber in `cm⁻¹`,
+- $\tilde{\nu}_0$ is the transition energy in `cm⁻¹`,
+- $f$ is the oscillator strength,
+- $w$ is the app line-width parameter in `cm⁻¹`.
+
+For compatibility with the original tools, the UI refers to this width as an FWHM-like broadening parameter.
+
+With the formula above, the band reaches half height at
+
+$$
+|\tilde{\nu} - \tilde{\nu}_0| = w
+$$
+
+so the mathematical full width at half maximum of this Gaussian form is
+
+$$
+\mathrm{FWHM}_{\mathrm{math}} = 2w
+$$
+
 Live controls are available for:
 
 - Gaussian line width / FWHM-like parameter in `cm⁻¹`,
@@ -81,44 +116,114 @@ The raw ORCA transition table remains unchanged.
 
 ---
 
+### Molar extinction coefficient estimates
+
+Detected peaks include an estimated decadic molar extinction coefficient:
+
+- `ε / M⁻¹ cm⁻¹`
+
+The estimate is derived from the TD-DFT oscillator strengths and the Gaussian line shape used by the app.
+
+The oscillator-strength relation used is
+
+$$
+f \approx 4.32 \times 10^{-9}
+\int \varepsilon(\tilde{\nu}) \, d\tilde{\nu}
+$$
+
+or equivalently
+
+$$
+\int \varepsilon(\tilde{\nu}) \, d\tilde{\nu}
+\approx
+2.315 \times 10^8 \cdot f
+$$
+
+with:
+
+- $\varepsilon$ in `L mol⁻¹ cm⁻¹` = `M⁻¹ cm⁻¹`,
+- $\tilde{\nu}$ in `cm⁻¹`.
+
+For consistency with the displayed calculated spectrum, the app uses the same historical Gaussian width convention as the plotted spectrum.
+
+The area-normalized Gaussian line shape used for the molar-extinction estimate is
+
+$$
+g(\tilde{\nu}) =
+\frac{\sqrt{\ln(2) / \pi}}{w}
+\exp\left[
+-\ln(2)
+\left(
+\frac{\tilde{\nu}_0 - \tilde{\nu}}{w}
+\right)^2
+\right]
+$$
+
+with
+
+$$
+\int_{-\infty}^{\infty}
+g(\tilde{\nu}) \, d\tilde{\nu}
+= 1
+$$
+
+The molar extinction coefficient at a given wavenumber is estimated as
+
+$$
+\varepsilon(\tilde{\nu})
+=
+\sum_i
+\left[
+2.315 \times 10^8
+\cdot f_i
+\cdot g_i(\tilde{\nu})
+\right]
+$$
+
+For a detected peak, $\varepsilon$ is evaluated at the detected peak position using all parsed transitions.
+
+Important notes:
+
+- The ε values are estimates based on the chosen Gaussian broadening.
+- Changing the broadening width changes the estimated peak ε values.
+- Spectrum normalization and scale factor do not define the physical ε values.
+- The displayed spectrum shift is only a visual alignment transform and does not alter the underlying ORCA transition energies used for the ε estimate.
+- The calculation uses the app's historical broadening convention for compatibility, not a newly redefined true-FWHM Gaussian convention.
+
+---
+
 ### ORCA 5 and ORCA 6 UV-Vis table support
 
 The parser reads the main absorption spectrum from the electric dipole section:
 
-```text
+```
 ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS
 ```
 
 and stops before:
 
-```text
+```
 ABSORPTION SPECTRUM VIA TRANSITION VELOCITY DIPOLE MOMENTS
 ```
 
 Supported UV-Vis table styles include:
 
-### ORCA 5-style absorption table
+#### ORCA 5-style absorption table
 
-```text
+```
 State   Energy   Wavelength   fosc   T2   TX   TY   TZ
         (cm-1)   (nm)
 ```
 
-### ORCA 6-style absorption table
+#### ORCA 6-style absorption table
 
-```text
+```
 Transition      Energy     Energy  Wavelength fosc(D2)
                  (eV)      (cm-1)    (nm)
 0-1A  ->  1-1A   ...
 ```
 
-ORCA 6 transition labels such as:
-
-```text
-0-1A → 1-1A
-```
-
-can optionally be shown in the transitions table.
+ORCA 6 transition labels such as `0-1A → 1-1A` can optionally be shown in the transitions table.
 
 ---
 
@@ -126,13 +231,13 @@ can optionally be shown in the transitions table.
 
 In addition to the UV-Vis absorption table, the app parses the TD-DFT/TDA excited-state assignment section:
 
-```text
+```
 TD-DFT/TDA EXCITED STATES
 ```
 
 or ORCA 6 variants such as:
 
-```text
+```
 TD-DFT/TDA EXCITED STATES (SINGLETS)
 ```
 
@@ -155,36 +260,26 @@ The assignment panel lists the parsed states and their orbital contributions.
 
 The web app maps ORCA orbital numbers to HOMO/LUMO-style labels.
 
-For example:
+For example, an ORCA assignment such as
 
-```text
+```
 54a → 55a
 ```
 
 can be displayed as:
 
-```text
+```
 HOMOα → LUMOα
 ```
 
 For unrestricted calculations, alpha and beta orbital references are handled separately where possible, e.g.:
 
-```text
+```
 HOMOα / LUMOα
 HOMOβ / LUMOβ
 ```
 
-The transitions table can display assignments either as:
-
-```text
-HOMO/LUMO
-```
-
-or as original:
-
-```text
-ORCA orbitals
-```
+The transitions table can display assignments either as `HOMO/LUMO` or as original `ORCA orbitals`.
 
 This makes it possible to switch between a chemically interpreted view and the raw ORCA orbital numbering.
 
@@ -229,9 +324,14 @@ Peak detection uses the displayed scaled spectrum and supports live controls for
 
 Detected peaks are shown in a table with:
 
-```text
-λ / nm, E / eV, E / cm⁻¹, scaled intensity, relative intensity / %
-```
+- `λ / nm`
+- `E / eV`
+- `E / cm⁻¹`
+- `ε / M⁻¹ cm⁻¹`
+- scaled intensity
+- relative intensity / `%`
+
+The `ε / M⁻¹ cm⁻¹` column gives the estimated molar extinction coefficient at the detected peak position.
 
 Peak labels can also be shown directly in the Plotly spectrum.
 
@@ -241,11 +341,7 @@ Peak labels can also be shown directly in the Plotly spectrum.
 
 In addition to ORCA output files, an experimental CSV spectrum can be loaded as an overlay.
 
-Experimental x-values are interpreted as:
-
-```text
-wavelength / nm
-```
+Experimental x-values are interpreted as wavelength values in `nm`.
 
 Supported CSV features include:
 
@@ -259,9 +355,8 @@ Supported CSV features include:
 
 The first two numeric columns are used as:
 
-```text
-wavelength_nm, y value
-```
+- `wavelength_nm`
+- `y value`
 
 The experimental spectrum can be shown together with the calculated ORCA spectrum.
 
@@ -299,7 +394,7 @@ The web app supports export of:
 - CSV of the calculated spectrum,
 - Markdown export of the transitions table.
 
-### PNG export
+#### PNG export
 
 The PNG export uses the current Plotly view.
 
@@ -312,13 +407,15 @@ It includes the visible plot state, such as:
 - labels,
 - experimental overlay if enabled.
 
-### CSV export
+#### CSV export
 
-The calculated spectrum CSV contains:
+The calculated spectrum CSV contains the following columns:
 
-```text
-x_nm, x_cm-1, x_eV, intensity, intensity_scaled
-```
+- `x_nm`
+- `x_cm-1`
+- `x_eV`
+- `intensity`
+- `intensity_scaled`
 
 Where:
 
@@ -330,7 +427,10 @@ Where:
 
 The calculated spectrum shift is included in the exported x-axis values.
 
-### Markdown transition-table export
+The CSV export contains the sampled calculated spectrum curve.  
+It does not currently export the detected peak table.
+
+#### Markdown transition-table export
 
 The Markdown export contains metadata and a transition table corresponding to the current table display settings.
 
@@ -345,6 +445,8 @@ It includes information such as:
 - assignment selection mode,
 - optional ORCA transition-label column.
 
+The Markdown transition-table export does not currently include the detected peak table.
+
 This export is intended as a browser-based replacement for tabular state summaries previously generated with command-line helper scripts.
 
 ---
@@ -353,18 +455,17 @@ This export is intended as a browser-based replacement for tabular state summari
 
 Open the web app:
 
-```text
 https://radi0sus.github.io/advanced_orca_uv/
-```
 
 Then:
 
 1. Select an ORCA output file.
 2. Inspect the calculated UV-Vis spectrum.
 3. Adjust broadening, shift, scaling, axis, or display options if needed.
-4. Optionally inspect TD-DFT/TDA assignments and HOMO/LUMO mapping.
-5. Optionally load an experimental CSV spectrum.
-6. Export the plot as PNG, the calculated spectrum as CSV, or the transition table as Markdown.
+4. Inspect detected peaks and estimated molar extinction coefficients.
+5. Optionally inspect TD-DFT/TDA assignments and HOMO/LUMO mapping.
+6. Optionally load an experimental CSV spectrum.
+7. Export the plot as PNG, the calculated spectrum as CSV, or the transition table as Markdown.
 
 ---
 
@@ -376,13 +477,13 @@ The app expects an ORCA output file containing a UV-Vis absorption spectrum sect
 
 The main spectrum is read from:
 
-```text
+```
 ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS
 ```
 
 up to:
 
-```text
+```
 ABSORPTION SPECTRUM VIA TRANSITION VELOCITY DIPOLE MOMENTS
 ```
 
@@ -390,7 +491,7 @@ The velocity dipole section is not used for the main spectrum.
 
 Example ORCA 6 absorption section:
 
-```text
+```
 ----------------------------------------------------------------------------------------------------
                      ABSORPTION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE MOMENTS
 ----------------------------------------------------------------------------------------------------
@@ -402,7 +503,7 @@ Example ORCA 6 absorption section:
 
 Example TD-DFT/TDA excited-state assignment section:
 
-```text
+```
 TD-DFT/TDA EXCITED STATES (SINGLETS)
 
 STATE  1:  E=   0.089135 au      2.425 eV    19562.8 cm**-1 <S**2> =   0.000000 Mult 1
@@ -421,7 +522,7 @@ Experimental CSV files may contain either a header or no header.
 
 Examples:
 
-```csv
+```
 wavelength_nm,absorbance
 250,0.12
 251,0.14
@@ -430,7 +531,7 @@ wavelength_nm,absorbance
 
 or:
 
-```csv
+```
 250 0.12
 251 0.14
 252 0.15
@@ -440,9 +541,8 @@ Semicolon, tab, comma, and whitespace-separated files are supported.
 
 The first two numeric columns are used as:
 
-```text
-wavelength_nm, y value
-```
+- `wavelength_nm`
+- `y value`
 
 ---
 
@@ -450,7 +550,7 @@ wavelength_nm, y value
 
 The original Python CLI tool is still useful for command-line workflows and scripted processing:
 
-```console
+```
 python3 orca-uv.py filename
 ```
 
@@ -470,6 +570,7 @@ Compared to the original CLI version, the web app adds:
 - experimental CSV overlay,
 - live parameter controls,
 - peak detection and peak tables,
+- estimated molar extinction coefficients for detected peaks,
 - modern light/dark interface,
 - direct PNG, CSV, and Markdown export from the browser.
 
@@ -480,6 +581,11 @@ Compared to the original CLI version, the web app adds:
 The calculated UV-Vis spectrum is broadened in the `cm⁻¹` energy domain and converted to the selected display axis.
 
 The Gaussian broadening formula follows the historical behavior of the original Python tool for compatibility.
+
+The line-width control is an FWHM-like broadening parameter inherited from the original workflow.  
+For the historical Gaussian form used by the app, the curve reaches half height at one line-width parameter away from the center.
+
+Estimated molar extinction coefficients are calculated from oscillator strengths using an area-normalized Gaussian line shape consistent with the displayed broadening convention.
 
 The displayed calculated spectrum shift is intended for visual alignment with experimental data.  
 It does not modify the raw ORCA transition energies in the parsed transition table.
@@ -496,6 +602,4 @@ CD spectra and velocity dipole spectra are not used for the main plotted UV-Vis 
 
 This web app is based on the original `orca_uv` Python tool:
 
-```text
 https://github.com/radi0sus/orca_uv
-```

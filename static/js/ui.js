@@ -497,7 +497,7 @@
     if (peakCount === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="6">No peaks detected.</td>
+          <td colspan="7">No peaks detected.</td>
         </tr>
       `;
       return;
@@ -513,6 +513,7 @@
             <td>${formatNumber(displayed.wavelengthNm, 1)}</td>
             <td>${formatNumber(displayed.energyEv, 3)}</td>
             <td>${formatNumber(displayed.energyCm1, 1)}</td>
+            <td>${formatEpsilon(peak.epsilon)}</td>
             <td>${formatNumber(peak.intensityScaled, 3)}</td>
             <td>${formatNumber(peak.relativeIntensityPercent, 1)}</td>
           </tr>
@@ -993,6 +994,28 @@ function setInputInvalid(element, invalid) {
     }
 
     return rounded.toString();
+  }
+
+  function formatEpsilon(value) {
+    if (!Number.isFinite(value)) {
+      return "—";
+    }
+
+    const absolute = Math.abs(value);
+
+    if (absolute >= 100) {
+      return Math.round(value).toString();
+    }
+
+    if (absolute >= 10) {
+      return value.toFixed(1);
+    }
+
+    if (absolute > 0) {
+      return value.toPrecision(3);
+    }
+
+    return "0";
   }
 
   function formatNumber(value, digits = 2) {

@@ -5,7 +5,7 @@
 
   window.OrcaUV = window.OrcaUV || {};
 
-  const { UNITS } = window.OrcaUV.Constants;
+  const { UNITS, SPECTROSCOPY } = window.OrcaUV.Constants;
   const { cm1ToNm, cm1ToEv } = window.OrcaUV.Import;
 
   function buildSpectrum(transitions, options = {}) {
@@ -319,6 +319,80 @@
     );
   }
 
+  function calculateEpsilonAtCm1(transitions, xCm1, widthCm1) {
+    /*
+      Calculate the decadic molar extinction coefficient ε at xCm1.
+
+      Units:
+        xCm1, transition.energyCm1, widthCm1: cm⁻¹
+        result: L mol⁻¹ cm⁻¹ = M⁻¹ cm⁻¹
+
+      This intentionally uses the same historical Gaussian width convention
+      as gaussian():
+
+        exp(-ln(2) * ((center - x) / width)^2)
+
+      Therefore the displayed curve shape and ε values are consistent.
+      With this convention, the normalized line shape is:
+
+        g(x) = sqrt(ln(2) / pi) / width
+               * exp(-ln(2) * ((center - x) / width)^2)
+
+      and:
+        ε(x) = Σ [2.315e8 * f_i * g_i(x)]
+    */
+
+    const validTransitions = sanitizeTransitions(transitions);
+
+    if (
+      validTransitions.length === 0 ||
+      !Number.isFinite(xCm1) ||
+      !Number.isFinite(widthCm1) ||
+      widthCm1 <= 0
+    ) {
+      return NaN;
+    }
+
+    let epsilon = 0;
+
+    for (const transition of validTransitions) {
+      const contribution = epsilonGaussian(
+        transition.fosc,
+        transition.energyCm1,
+        xCm1,
+        widthCm1,
+      );
+
+      if (Number.isFinite(contribution)) {
+        epsilon += contribution;
+      }
+    }
+
+    return epsilon;
+  }
+
+  function epsilonGaussian(fosc, centerCm1, xCm1, widthCm1) {
+    if (
+      !Number.isFinite(fosc) ||
+      !Number.isFinite(centerCm1) ||
+      !Number.isFinite(xCm1) ||
+      !Number.isFinite(widthCm1) ||
+      fosc < 0 ||
+      widthCm1 <= 0
+    ) {
+      return NaN;
+    }
+
+    const areaPerFosc = Number.isFinite(SPECTROSCOPY?.OSC_STRENGTH_TO_EPSILON_AREA)
+      ? SPECTROSCOPY.OSC_STRENGTH_TO_EPSILON_AREA
+      : 2.315e8;
+
+    const normalizedPrefactor = Math.sqrt(Math.log(2) / Math.PI) / widthCm1;
+    const exponent = -Math.log(2) * ((centerCm1 - xCm1) / widthCm1) ** 2;
+
+    return areaPerFosc * fosc * normalizedPrefactor * Math.exp(exponent);
+  }
+
   function normalizeArray(values) {
     if (!Array.isArray(values) || values.length === 0) {
       return [];
@@ -360,6 +434,8 @@
   window.OrcaUV.Spectrum = {
     buildSpectrum,
     gaussian,
+    calculateEpsilonAtCm1,
+    epsilonGaussian,
     normalizeArray,
   };
 })();

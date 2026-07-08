@@ -673,7 +673,6 @@ details.control-section.sidebar-collapsible[open] > .sidebar-summary::after {
   font-size: 0.72rem;
 }
 
-
 @media (prefers-color-scheme: dark) {
   .btn.primary,
   .btn.primary:hover {
@@ -687,7 +686,6 @@ details.control-section.sidebar-collapsible[open] > .sidebar-summary::after {
   font-size: 0.75rem;
   line-height: 1.45;
 }
-
 
 /* Topbar */
 
@@ -861,7 +859,7 @@ details.control-section.sidebar-collapsible[open] > .sidebar-summary::after {
 
 .analysis-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(240px, 0.75fr) minmax(560px, 1.45fr);
   gap: 16px;
   align-items: start;
 }
@@ -874,6 +872,10 @@ details.control-section.sidebar-collapsible[open] > .sidebar-summary::after {
 
 .panel.wide {
   grid-column: 1 / -1;
+}
+
+.peaks-panel table {
+  min-width: 820px;
 }
 
 .panel-body {
@@ -1225,6 +1227,10 @@ summary {
 
   .brand {
     grid-column: 1 / -1;
+  }
+
+  .analysis-grid {
+    grid-template-columns: minmax(230px, 0.75fr) minmax(480px, 1.45fr);
   }
 }
 
