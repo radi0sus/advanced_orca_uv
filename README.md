@@ -170,8 +170,7 @@ $$
 The molar extinction coefficient at a given wavenumber is estimated as
 
 $$
-\varepsilon(\tilde{\nu})
-=
+\varepsilon(\tilde{\nu}) =
 \sum_i
 \left[
 2.315 \times 10^8
