@@ -70,7 +70,7 @@
     updateAssignmentThresholdControl(uiState);
 
     setText("plot-axis-pill", `X: ${axisLabel(uiState.xAxis)}`);
-    setText("plot-fwhm-pill", `Broadening: ${formatInteger(uiState.fwhmCm1)} cm⁻¹`);
+    setText("plot-fwhm-pill", `HWHM: ${formatInteger(uiState.fwhmCm1)} cm⁻¹`);
 
     updateFwhmReadout(uiState.fwhmCm1);
 
@@ -687,10 +687,10 @@
 
     /*
       The Gaussian formula (see gaussian() in spectrum.js) reaches
-      half-height at |center - x| = fwhmCm1, i.e. one broadening parameter
-      away from the center on each side. The true FWHM (half-max point to
-      half-max point) is therefore twice the broadening parameter shown on
-      the slider.
+      half-height at |center - x| = fwhmCm1, i.e. one HWHM (half width at
+      half maximum) away from the center on each side. The FWHM (half-max
+      point to half-max point) is therefore twice the HWHM shown on the
+      slider.
     */
     const trueFwhmCm1 = fwhmCm1 * 2;
 
@@ -701,7 +701,7 @@
 
     readout.innerHTML = `
       <div class="readout-row">
-        <span>True FWHM</span>
+        <span>FWHM</span>
         <strong>${formatInteger(trueFwhmCm1)} cm⁻¹</strong>
       </div>
       <div class="readout-row">

@@ -90,25 +90,25 @@ where:
 - $f$ is the oscillator strength,
 - $w$ is the app line-width parameter in `cm⁻¹`.
 
-For compatibility with the original tools, the UI calls this control **Broadening** (not FWHM) to avoid implying that the slider value itself is the full width at half maximum.
-
 With the formula above, the band reaches half height at
 
 $$
 |\tilde{\nu} - \tilde{\nu}_0| = w
 $$
 
-so the mathematical full width at half maximum of this Gaussian form is
+so $w$ is itself the half width at half maximum, and the UI calls this control **HWHM** rather than Broadening.
+
+The mathematical full width at half maximum of this Gaussian form is therefore
 
 $$
-\mathrm{FWHM}_{\mathrm{math}} = 2w
+\mathrm{FWHM} = 2w
 $$
 
-The UI surfaces this as **True FWHM** ($2w$) in the broadening readout and in the Info & metadata panel, while the slider itself and its pill continue to show the raw broadening parameter $w$ that is actually used internally.
+The UI surfaces this as **FWHM** ($2w$) in the HWHM readout and in the Info & metadata panel, while the slider itself and its pill continue to show the raw HWHM parameter $w$ that is actually used internally.
 
 Live controls are available for:
 
-- Broadening (Gaussian line-width parameter) in `cm⁻¹`,
+- HWHM (Gaussian line-width parameter) in `cm⁻¹`,
 - normalization of the calculated spectrum,
 - scale factor,
 - calculated spectrum shift in `cm⁻¹`.
@@ -189,7 +189,7 @@ Important notes:
 - Changing the broadening width changes the estimated peak ε values.
 - Spectrum normalization and scale factor do not define the physical ε values.
 - The displayed spectrum shift is only a visual alignment transform and does not alter the underlying ORCA transition energies used for the ε estimate.
-- The calculation uses the app's historical broadening convention for compatibility, not a newly redefined true-FWHM Gaussian convention.
+- The calculation uses the app's historical broadening convention for compatibility, not a newly redefined FWHM-based Gaussian convention.
 
 #### Cross-check against Multiwfn
 
@@ -203,7 +203,7 @@ $$
 
 which is exactly the constant used above. The `eV`-based value works out to $2.315 \times 10^{8} / 8065.54 \approx 28{,}702$, matching Multiwfn's stated $28{,}700$ to within rounding.
 
-This has also been verified numerically: exporting the app's calculated spectrum as CSV and comparing it point-by-point against Multiwfn's own `spectrum_curve.txt` export (same transitions, same true FWHM) shows agreement to better than 0.1% across the full spectrum, and better than 0.04% at every individual peak.
+This has also been verified numerically: exporting the app's calculated spectrum as CSV and comparing it point-by-point against Multiwfn's own `spectrum_curve.txt` export (same transitions, same FWHM) shows agreement to better than 0.1% across the full spectrum, and better than 0.04% at every individual peak.
 
 #### Continuous ε curve, right-hand axis, and hover
 
@@ -609,8 +609,8 @@ The calculated UV-Vis spectrum is broadened in the `cm⁻¹` energy domain and c
 
 The Gaussian broadening formula follows the historical behavior of the original Python tool for compatibility.
 
-The line-width control is labeled **Broadening** (not FWHM) since the slider value is not itself the full width at half maximum.  
-For the historical Gaussian form used by the app, the curve reaches half height at one broadening-parameter away from the center, so the true FWHM is twice the broadening value. The app surfaces this true FWHM separately in the broadening readout and the Info & metadata panel.
+The line-width control is labeled **HWHM** since the slider value is itself the half width at half maximum.  
+For the historical Gaussian form used by the app, the curve reaches half height at one HWHM away from the center, so the FWHM is twice the HWHM value. The app surfaces this FWHM separately in the HWHM readout and the Info & metadata panel.
 
 Estimated molar extinction coefficients are calculated from oscillator strengths using an area-normalized Gaussian line shape consistent with the displayed broadening convention.
 

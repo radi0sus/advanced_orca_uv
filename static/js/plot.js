@@ -616,7 +616,7 @@
     /*
       Put state labels beside the stick close to the baseline instead of above
       the stick. This avoids collisions with peak labels, especially for small
-      FWHM values where peaks and sticks nearly coincide.
+      HWHM values where peaks and sticks nearly coincide.
     */
     const baseY = yMax > 0 ? yMax * 0.045 : 0.045;
     const maxLabelY = yMax > 0 ? yMax * 0.14 : 0.14;

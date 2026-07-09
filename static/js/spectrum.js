@@ -330,7 +330,7 @@
       a * exp(-(ln(2) * ((center - x) / linewidth)^2))
 
       Note:
-      The UI calls this FWHM for continuity with the old tools, but this
+      The UI calls this HWHM (half width at half maximum), since this
       formula reaches half-height at |center - x| = widthCm1.
     */
 
