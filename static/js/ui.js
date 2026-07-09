@@ -70,7 +70,7 @@
     updateAssignmentThresholdControl(uiState);
 
     setText("plot-axis-pill", `X: ${axisLabel(uiState.xAxis)}`);
-    setText("plot-fwhm-pill", `FWHM: ${formatInteger(uiState.fwhmCm1)} cm⁻¹`);
+    setText("plot-fwhm-pill", `Broadening: ${formatInteger(uiState.fwhmCm1)} cm⁻¹`);
 
     updateFwhmReadout(uiState.fwhmCm1);
 
@@ -143,7 +143,7 @@
       formatDisplayedRange(autoRangeInfo?.range, uiState.xAxis),
     );
 
-    setText("info-fwhm", `${formatInteger(uiState.fwhmCm1)} cm⁻¹`);
+    setText("info-fwhm", `${formatInteger(uiState.fwhmCm1 * 2)} cm⁻¹`);
     setText("info-spectrum-shift", `${formatSignedInteger(uiState.spectrumShiftCm1)} cm⁻¹`);
     setText("info-normalize-spectrum", uiState.normalizeSpectrum ? "enabled" : "disabled");
     setText(
@@ -685,15 +685,24 @@
     const readout = document.getElementById("fwhm-readout");
     if (!readout) return;
 
-    const widthEv = cm1ToEv(fwhmCm1);
+    /*
+      The Gaussian formula (see gaussian() in spectrum.js) reaches
+      half-height at |center - x| = fwhmCm1, i.e. one broadening parameter
+      away from the center on each side. The true FWHM (half-max point to
+      half-max point) is therefore twice the broadening parameter shown on
+      the slider.
+    */
+    const trueFwhmCm1 = fwhmCm1 * 2;
+
+    const widthEv = cm1ToEv(trueFwhmCm1);
 
     const referenceNm = 400;
-    const approxWidthNm = (referenceNm ** 2 * fwhmCm1) / 1.0e7;
+    const approxWidthNm = (referenceNm ** 2 * trueFwhmCm1) / 1.0e7;
 
     readout.innerHTML = `
       <div class="readout-row">
-        <span>Internal width</span>
-        <strong>${formatInteger(fwhmCm1)} cm⁻¹</strong>
+        <span>True FWHM</span>
+        <strong>${formatInteger(trueFwhmCm1)} cm⁻¹</strong>
       </div>
       <div class="readout-row">
         <span>Approx. at ${referenceNm} nm</span>

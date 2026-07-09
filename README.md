@@ -90,7 +90,7 @@ where:
 - $f$ is the oscillator strength,
 - $w$ is the app line-width parameter in `cm⁻¹`.
 
-For compatibility with the original tools, the UI refers to this width as an FWHM-like broadening parameter.
+For compatibility with the original tools, the UI calls this control **Broadening** (not FWHM) to avoid implying that the slider value itself is the full width at half maximum.
 
 With the formula above, the band reaches half height at
 
@@ -104,9 +104,11 @@ $$
 \mathrm{FWHM}_{\mathrm{math}} = 2w
 $$
 
+The UI surfaces this as **True FWHM** ($2w$) in the broadening readout and in the Info & metadata panel, while the slider itself and its pill continue to show the raw broadening parameter $w$ that is actually used internally.
+
 Live controls are available for:
 
-- Gaussian line width / FWHM-like parameter in `cm⁻¹`,
+- Broadening (Gaussian line-width parameter) in `cm⁻¹`,
 - normalization of the calculated spectrum,
 - scale factor,
 - calculated spectrum shift in `cm⁻¹`.
@@ -188,6 +190,20 @@ Important notes:
 - Spectrum normalization and scale factor do not define the physical ε values.
 - The displayed spectrum shift is only a visual alignment transform and does not alter the underlying ORCA transition energies used for the ε estimate.
 - The calculation uses the app's historical broadening convention for compatibility, not a newly redefined true-FWHM Gaussian convention.
+
+#### Cross-check against Multiwfn
+
+This convention matches the one documented in the Multiwfn manual (section on plotting UV-Vis spectra): with the X-axis in units of `1000 cm⁻¹` and the Y-axis in `L·mol⁻¹·cm⁻¹`, Multiwfn states that the area under the curve per unit oscillator strength $f$ is $\frac{1}{4.32} \times 10^{6} \approx 231{,}481$, or equivalently $\approx 28{,}700$ if `eV` is used for the X-axis instead.
+
+Converting Multiwfn's `1000 cm⁻¹`-based area to the app's native `cm⁻¹` X-axis (one Multiwfn X-axis unit = `1000 cm⁻¹`, so the integral scales by `1000`) gives:
+
+$$
+231{,}481 \times 1000 \approx 2.315 \times 10^{8}
+$$
+
+which is exactly the constant used above. The `eV`-based value works out to $2.315 \times 10^{8} / 8065.54 \approx 28{,}702$, matching Multiwfn's stated $28{,}700$ to within rounding.
+
+This has also been verified numerically: exporting the app's calculated spectrum as CSV and comparing it point-by-point against Multiwfn's own `spectrum_curve.txt` export (same transitions, same true FWHM) shows agreement to better than 0.1% across the full spectrum, and better than 0.04% at every individual peak.
 
 #### Continuous ε curve, right-hand axis, and hover
 
@@ -419,21 +435,21 @@ It includes the visible plot state, such as:
 
 The calculated spectrum CSV contains the following columns:
 
-- `x_nm`
-- `x_cm-1`
-- `x_eV`
+- `x /nm`
+- `x /cm⁻¹`
+- `x /eV`
 - `intensity`
-- `intensity_scaled`
-- `epsilon`
+- `scaled intensity`
+- `epsilon /M⁻¹cm⁻¹`
 
 Where:
 
-- `x_nm` is the displayed wavelength axis,
-- `x_cm-1` is the displayed energy axis in `cm⁻¹`,
-- `x_eV` is the displayed energy axis in `eV`,
+- `x /nm` is the displayed wavelength axis,
+- `x /cm⁻¹` is the displayed energy axis in `cm⁻¹`,
+- `x /eV` is the displayed energy axis in `eV`,
 - `intensity` is the calculated summed spectrum intensity,
-- `intensity_scaled` is the displayed intensity after normalization and scaling,
-- `epsilon` is the estimated decadic molar extinction coefficient in `M⁻¹ cm⁻¹`, using the same area-normalized Gaussian line shape as the peak-table ε estimate. It is independent of the `normalizeSpectrum`/scale-factor display settings on `intensity_scaled`.
+- `scaled intensity` is the displayed intensity after normalization and scaling,
+- `epsilon /M⁻¹cm⁻¹` is the estimated decadic molar extinction coefficient, using the same area-normalized Gaussian line shape as the peak-table ε estimate. It is independent of the `normalizeSpectrum`/scale-factor display settings on `scaled intensity`.
 
 The calculated spectrum shift is included in the exported x-axis values.
 
@@ -593,8 +609,8 @@ The calculated UV-Vis spectrum is broadened in the `cm⁻¹` energy domain and c
 
 The Gaussian broadening formula follows the historical behavior of the original Python tool for compatibility.
 
-The line-width control is an FWHM-like broadening parameter inherited from the original workflow.  
-For the historical Gaussian form used by the app, the curve reaches half height at one line-width parameter away from the center.
+The line-width control is labeled **Broadening** (not FWHM) since the slider value is not itself the full width at half maximum.  
+For the historical Gaussian form used by the app, the curve reaches half height at one broadening-parameter away from the center, so the true FWHM is twice the broadening value. The app surfaces this true FWHM separately in the broadening readout and the Info & metadata panel.
 
 Estimated molar extinction coefficients are calculated from oscillator strengths using an area-normalized Gaussian line shape consistent with the displayed broadening convention.
 

@@ -34,10 +34,34 @@
     const experimentalY = getExperimentalDisplayYData(spectrum, options);
 
     const traces = buildTraces(spectrum, options, colors, experimentalY);
+
+    /*
+      Bug fix: the Y-axis must only scale to what is actually visible within
+      the current x-range (auto OR manual). Previously, yMax was computed
+      from the full, unfiltered arrays, so a strong stick or experimental
+      point lying outside a manually chosen x-range could still inflate the
+      Y-axis padding, even though it is never drawn inside the visible plot
+      area. Filtering by the resolved x-range keeps the Y-axis tight to what
+      is on screen, matching the auto-range behavior.
+    */
+    const xRange = buildXRange(spectrum, options);
+
     const yMax = getYMax([
-      spectrum.intensityScaled,
-      getStickDisplayHeights(spectrum, options),
-      experimentalY,
+      getVisibleValues(
+        getSpectrumXData(spectrum, options.xAxis, options),
+        spectrum.intensityScaled,
+        xRange,
+      ),
+      getVisibleValues(
+        getStickXValues(spectrum, options),
+        getStickDisplayHeights(spectrum, options),
+        xRange,
+      ),
+      getVisibleValues(
+        getExperimentalXValues(options.experimental, options.xAxis),
+        experimentalY,
+        xRange,
+      ),
     ]);
 
     const annotations = [];
@@ -1413,6 +1437,60 @@
     }
 
     return maxValue;
+  }
+
+  function getVisibleValues(xValues, yValues, xRange) {
+    /*
+      Returns only the yValues whose matching xValue falls inside xRange.
+      Used to keep Y-axis autoscaling limited to what is actually visible,
+      instead of being skewed by data points outside the current (possibly
+      manually set) x-range.
+    */
+    if (!Array.isArray(yValues)) {
+      return [];
+    }
+
+    if (!Array.isArray(xRange) || xRange.length !== 2) {
+      return yValues;
+    }
+
+    if (!Array.isArray(xValues) || xValues.length !== yValues.length) {
+      return yValues;
+    }
+
+    const min = Math.min(xRange[0], xRange[1]);
+    const max = Math.max(xRange[0], xRange[1]);
+    const visible = [];
+
+    for (let index = 0; index < xValues.length; index += 1) {
+      const x = xValues[index];
+
+      if (Number.isFinite(x) && x >= min && x <= max) {
+        visible.push(yValues[index]);
+      }
+    }
+
+    return visible;
+  }
+
+  function getStickXValues(spectrum, options) {
+    if (!Array.isArray(spectrum?.sticks)) {
+      return [];
+    }
+
+    return spectrum.sticks.map((stick) =>
+      getTransitionXValue(stick, options.xAxis, options),
+    );
+  }
+
+  function getExperimentalXValues(experimental, xAxis) {
+    const xNm = getExperimentalXNm(experimental);
+
+    if (!Array.isArray(xNm)) {
+      return [];
+    }
+
+    return xNm.map((nm) => convertNmToAxis(nm, xAxis));
   }
 
   function getMaxFinite(values) {
