@@ -91,6 +91,7 @@
     showGaussianAreas: false,
     showPeakLabels: true,
     showGrid: false,
+    showEpsilonAxis: true,
 
     detectPeaks: true,
     peakHeightPercent: 2,
@@ -129,7 +130,8 @@
     "x_cm-1",
     "x_eV",
     "intensity",
-    "intensity_norm",
+    "intensity_scaled",
+    "epsilon",
   ];
 
   const FILE_ACCEPT = {

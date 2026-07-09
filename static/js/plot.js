@@ -111,6 +111,10 @@
       traces.push(buildSpectrumTrace(spectrum, options, colors));
     }
 
+    if (shouldShowEpsilonAxis(spectrum, options)) {
+      traces.push(buildEpsilonAxisAnchorTrace(spectrum, options));
+    }
+
     if (shouldShowExperimentalOverlay(options)) {
       const experimentalTrace = buildExperimentalTrace(
         spectrum,
@@ -127,12 +131,46 @@
     return traces;
   }
 
+  function buildEpsilonAxisAnchorTrace(spectrum, options) {
+    /*
+      Plotly only renders a secondary y-axis (yaxis2) if at least one trace
+      is actually bound to it via `yaxis: "y2"`. This trace exists purely to
+      anchor that axis into existence; it is fully invisible (zero-width
+      line, zero opacity, hover skipped) and never drawn on screen. The
+      visible curve remains the single "Calculated" trace on the primary
+      y-axis; its hover already reports the ε value via customdata.
+
+      Its y-data (raw physical epsilon) matches the explicit yaxis2.range
+      set in buildLayout, so Plotly's own autorange is never actually
+      needed, but supplying real data keeps the axis well-defined even if
+      that range were ever omitted.
+    */
+    const x = getSpectrumXData(spectrum, options.xAxis, options);
+    const y = spectrum.epsilon;
+
+    return {
+      x,
+      y,
+      yaxis: "y2",
+      type: "scatter",
+      mode: "lines",
+      name: "epsilon-axis-anchor",
+      line: {
+        width: 0,
+      },
+      opacity: 0,
+      hoverinfo: "skip",
+      showlegend: false,
+    };
+  }
+
   function buildSpectrumTrace(spectrum, options, colors) {
     const x = getSpectrumXData(spectrum, options.xAxis, options);
     const y = spectrum.intensityScaled;
     const useFill = options.showSpectrumFill !== false;
+    const showEpsilon = shouldShowEpsilonAxis(spectrum, options);
 
-    return {
+    const trace = {
       x,
       y,
       type: "scatter",
@@ -144,11 +182,33 @@
       },
       fill: useFill ? "tozeroy" : "none",
       fillcolor: useFill ? colors.spectrumFill : "rgba(0,0,0,0)",
-      hovertemplate:
+    };
+
+    if (showEpsilon) {
+      trace.customdata = spectrum.epsilon;
+      trace.hovertemplate =
         "Calculated<br>" +
         `${axisHoverLabel(options.xAxis)}: %{x:.4g}<br>` +
-        "Intensity: %{y:.4f}<extra></extra>",
-    };
+        "Intensity: %{y:.4f}<br>" +
+        "ε: %{customdata:.4g} M⁻¹cm⁻¹<extra></extra>";
+    } else {
+      trace.hovertemplate =
+        "Calculated<br>" +
+        `${axisHoverLabel(options.xAxis)}: %{x:.4g}<br>` +
+        "Intensity: %{y:.4f}<extra></extra>";
+    }
+
+    return trace;
+  }
+
+  function shouldShowEpsilonAxis(spectrum, options) {
+    return Boolean(
+      options.showEpsilonAxis &&
+      Array.isArray(spectrum?.epsilon) &&
+      spectrum.epsilon.length > 0 &&
+      Number.isFinite(spectrum.maxEpsilon) &&
+      spectrum.maxEpsilon > 0,
+    );
   }
 
   function buildExperimentalTrace(spectrum, options, colors, experimentalY) {
@@ -649,6 +709,10 @@
     const xRange = buildXRange(spectrum, options);
     const yRange = buildYRange(yMax, options);
     const xTickConfig = buildXAxisTickConfig(xRange, options.xAxis);
+    const showEpsilonAxis = shouldShowEpsilonAxis(spectrum, options);
+    const epsilonRange = showEpsilonAxis
+      ? getEpsilonAxisRange(spectrum, options, yRange)
+      : null;
 
     return {
       title: {
@@ -664,7 +728,7 @@
       plot_bgcolor: colors.plotBg,
       margin: {
         t: 72,
-        r: 30,
+        r: showEpsilonAxis ? 88 : 30,
         b: 96,
         l: 82,
       },
@@ -721,10 +785,71 @@
         showgrid: false,
         zeroline: false,
       },
+      ...(showEpsilonAxis
+        ? {
+            yaxis2: {
+              title: {
+                text: "ε / M⁻¹cm⁻¹",
+                font: {
+                  size: 15,
+                  color: colors.text,
+                },
+              },
+              range: epsilonRange ?? undefined,
+              overlaying: "y",
+              side: "right",
+              anchor: "x",
+              showline: true,
+              linecolor: colors.axis,
+              linewidth: 1.4,
+              ticks: "outside",
+              ticklen: 6,
+              tickwidth: 1.1,
+              tickcolor: colors.axis,
+              tickfont: {
+                color: colors.text,
+              },
+              automargin: true,
+              showgrid: false,
+              zeroline: false,
+            },
+          }
+        : {}),
       annotations,
       showlegend: false,
       hovermode: "closest",
     };
+  }
+
+  function getEpsilonAxisRange(spectrum, options, yRange) {
+    if (!Array.isArray(yRange) || yRange.length !== 2) {
+      return null;
+    }
+
+    const calculatedDisplayMax = getCalculatedDisplayMax(spectrum, options);
+    const maxEpsilon = Number.isFinite(spectrum?.maxEpsilon)
+      ? spectrum.maxEpsilon
+      : NaN;
+
+    if (
+      !Number.isFinite(calculatedDisplayMax) ||
+      calculatedDisplayMax <= 0 ||
+      !Number.isFinite(maxEpsilon) ||
+      maxEpsilon <= 0
+    ) {
+      return null;
+    }
+
+    /*
+      epsilon and the displayed (scaled/normalized) Intensity trace are
+      exactly proportional pointwise (see buildSpectrum in spectrum.js), so a
+      single ratio, taken at the calculated spectrum's own maximum, aligns
+      the secondary ε axis with the primary Intensity axis for every point
+      of the calculated curve.
+    */
+    const ratio = maxEpsilon / calculatedDisplayMax;
+
+    return [yRange[0] * ratio, yRange[1] * ratio];
   }
 
   function buildXRange(spectrum, options) {
@@ -1370,7 +1495,7 @@
 
     const colors = getThemeColors(isDarkMode());
 
-    Plotly.relayout(plotElement, {
+    const update = {
       paper_bgcolor: colors.paperBg,
       plot_bgcolor: colors.plotBg,
       "font.color": colors.text,
@@ -1385,7 +1510,16 @@
       "yaxis.tickcolor": colors.axis,
       "yaxis.tickfont.color": colors.text,
       "yaxis.gridcolor": colors.grid,
-    });
+    };
+
+    if (plotElement.layout.yaxis2) {
+      update["yaxis2.title.font.color"] = colors.text;
+      update["yaxis2.linecolor"] = colors.axis;
+      update["yaxis2.tickcolor"] = colors.axis;
+      update["yaxis2.tickfont.color"] = colors.text;
+    }
+
+    Plotly.relayout(plotElement, update);
   }
 
   function getThemeColors(dark) {

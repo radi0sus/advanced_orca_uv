@@ -137,6 +137,7 @@
       "#show-gaussian-areas",
       "#show-peak-labels",
       "#show-grid",
+      "#show-epsilon-axis",
       "#detect-peaks",
       "#peak-height-slider",
       "#peak-distance-slider",

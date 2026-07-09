@@ -64,6 +64,7 @@
     const xCm1Raw = spectrum.xCm1;
     const intensity = getRawIntensityArray(spectrum);
     const intensityScaled = spectrum.intensityScaled;
+    const epsilon = getEpsilonArray(spectrum);
 
     const shiftCm1 = Number.isFinite(uiState.spectrumShiftCm1)
       ? uiState.spectrumShiftCm1
@@ -76,6 +77,7 @@
         "x_eV",
         "intensity",
         "intensity_scaled",
+        "epsilon",
       ].join(","),
     ];
 
@@ -100,6 +102,7 @@
 
       const rawY = intensity[index];
       const scaledY = intensityScaled[index];
+      const epsilonY = epsilon[index];
 
       rows.push([
         formatCsvNumber(xNm, 8),
@@ -107,10 +110,19 @@
         formatCsvNumber(xEv, 10),
         formatCsvNumber(rawY, 12),
         formatCsvNumber(scaledY, 12),
+        formatCsvNumber(epsilonY, 4),
       ].join(","));
     }
 
     return `${rows.join("\n")}\n`;
+  }
+
+  function getEpsilonArray(spectrum) {
+    if (Array.isArray(spectrum?.epsilon)) {
+      return spectrum.epsilon;
+    }
+
+    return [];
   }
 
   function getRawIntensityArray(spectrum) {

@@ -57,6 +57,32 @@
     const maxIntensity = Math.max(...intensity.filter(Number.isFinite), 0);
     const maxFosc = Math.max(...validTransitions.map((transition) => transition.fosc), 0);
 
+    /*
+      Molar extinction coefficient (epsilon) curve.
+
+      Epsilon is a physical estimate derived only from the oscillator
+      strengths and the Gaussian line width (fwhmCm1). It intentionally does
+      NOT depend on normalizeSpectrum/scaleFactor: all display scaling and
+      normalization apply only to the Intensity axis, never to epsilon.
+
+      Because every transition shares the same fwhmCm1 in a given spectrum,
+      the epsilon curve is exactly proportional to the raw (unnormalized,
+      unscaled) intensity curve:
+
+        epsilon(x) = intensity(x) * epsilonFactor(fwhmCm1)
+
+      This lets the epsilon curve reuse the already-computed intensity array
+      instead of recomputing a Gaussian sum per grid point.
+    */
+    const epsilonFactor = getEpsilonFactor(fwhmCm1);
+    const epsilon = Number.isFinite(epsilonFactor)
+      ? intensity.map((value) =>
+          Number.isFinite(value) ? value * epsilonFactor : NaN,
+        )
+      : intensity.map(() => NaN);
+
+    const maxEpsilon = Math.max(...epsilon.filter(Number.isFinite), 0);
+
     return {
       /*
         These x arrays are the raw, unshifted calculated spectrum grid.
@@ -72,6 +98,10 @@
       intensity,
       intensityNorm,
       intensityScaled,
+
+      epsilon,
+      maxEpsilon,
+      epsilonFactor,
 
       maxIntensity,
       maxFosc,
@@ -383,14 +413,38 @@
       return NaN;
     }
 
+    const epsilonFactor = getEpsilonFactor(widthCm1);
+    const exponent = -Math.log(2) * ((centerCm1 - xCm1) / widthCm1) ** 2;
+
+    return epsilonFactor * fosc * Math.exp(exponent);
+  }
+
+  function getEpsilonFactor(widthCm1) {
+    /*
+      Converts a raw (fosc-amplitude) Gaussian contribution into the
+      corresponding decadic molar extinction coefficient contribution, for a
+      given shared Gaussian width widthCm1.
+
+      Derivation:
+        area-normalized line shape:
+          g(x) = sqrt(ln(2) / pi) / width * exp(-ln(2) * ((center - x)/width)^2)
+        epsilon contribution:
+          areaPerFosc * fosc * g(x)
+              = fosc * exp(-ln(2) * ((center - x)/width)^2)
+                * [areaPerFosc * sqrt(ln(2) / pi) / width]
+
+      The bracketed term is returned here and is independent of fosc/center/x,
+      so it can be reused to scale an entire pre-summed raw intensity array.
+    */
+    if (!Number.isFinite(widthCm1) || widthCm1 <= 0) {
+      return NaN;
+    }
+
     const areaPerFosc = Number.isFinite(SPECTROSCOPY?.OSC_STRENGTH_TO_EPSILON_AREA)
       ? SPECTROSCOPY.OSC_STRENGTH_TO_EPSILON_AREA
       : 2.315e8;
 
-    const normalizedPrefactor = Math.sqrt(Math.log(2) / Math.PI) / widthCm1;
-    const exponent = -Math.log(2) * ((centerCm1 - xCm1) / widthCm1) ** 2;
-
-    return areaPerFosc * fosc * normalizedPrefactor * Math.exp(exponent);
+    return areaPerFosc * Math.sqrt(Math.log(2) / Math.PI) / widthCm1;
   }
 
   function normalizeArray(values) {
@@ -423,6 +477,9 @@
       intensity: [],
       intensityNorm: [],
       intensityScaled: [],
+      epsilon: [],
+      maxEpsilon: 0,
+      epsilonFactor: NaN,
       maxIntensity: 0,
       maxFosc: 0,
       transitions: [],
@@ -436,6 +493,7 @@
     gaussian,
     calculateEpsilonAtCm1,
     epsilonGaussian,
+    getEpsilonFactor,
     normalizeArray,
   };
 })();

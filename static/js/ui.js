@@ -41,6 +41,7 @@
       showGaussianAreas: getCheckboxValue("show-gaussian-areas", DEFAULTS.showGaussianAreas),
       showPeakLabels: getCheckboxValue("show-peak-labels", DEFAULTS.showPeakLabels),
       showGrid: getCheckboxValue("show-grid", DEFAULTS.showGrid),
+      showEpsilonAxis: getCheckboxValue("show-epsilon-axis", DEFAULTS.showEpsilonAxis),
 
       detectPeaks: getCheckboxValue("detect-peaks", DEFAULTS.detectPeaks),
       peakHeightPercent: getNumberValue("peak-height-slider", DEFAULTS.peakHeightPercent),
@@ -576,6 +577,7 @@
     setCheckboxValue("show-gaussian-areas", DEFAULTS.showGaussianAreas);
     setCheckboxValue("show-peak-labels", DEFAULTS.showPeakLabels);
     setCheckboxValue("show-grid", DEFAULTS.showGrid);
+    setCheckboxValue("show-epsilon-axis", DEFAULTS.showEpsilonAxis);
   
     setCheckboxValue("detect-peaks", DEFAULTS.detectPeaks);
     setInputValue("peak-height-slider", DEFAULTS.peakHeightPercent);

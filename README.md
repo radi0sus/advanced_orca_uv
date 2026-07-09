@@ -189,6 +189,15 @@ Important notes:
 - The displayed spectrum shift is only a visual alignment transform and does not alter the underlying ORCA transition energies used for the ε estimate.
 - The calculation uses the app's historical broadening convention for compatibility, not a newly redefined true-FWHM Gaussian convention.
 
+#### Continuous ε curve, right-hand axis, and hover
+
+In addition to the per-peak ε estimate above, the app evaluates the same $\varepsilon(\tilde{\nu})$ expression across the entire plotted grid, giving a continuous molar-extinction curve alongside the calculated Intensity spectrum.
+
+- A **"ε axis"** toggle under **Plot elements** shows/hides a right-hand y-axis labeled `ε / M⁻¹ cm⁻¹`, scaled so it lines up with the calculated spectrum trace on the left Intensity axis.
+- Hovering over the calculated spectrum shows both `Intensity` and `ε` at that point.
+- The ε curve/axis is unaffected by `normalizeSpectrum` and the scale factor — those display transforms apply only to the Intensity axis, never to ε, since all transitions share one Gaussian width and ε is therefore always exactly proportional to the raw (unscaled) intensity.
+- CSV export (see below) includes the full ε curve as an additional column.
+
 ---
 
 ### ORCA 5 and ORCA 6 UV-Vis table support
@@ -415,6 +424,7 @@ The calculated spectrum CSV contains the following columns:
 - `x_eV`
 - `intensity`
 - `intensity_scaled`
+- `epsilon`
 
 Where:
 
@@ -422,7 +432,8 @@ Where:
 - `x_cm-1` is the displayed energy axis in `cm⁻¹`,
 - `x_eV` is the displayed energy axis in `eV`,
 - `intensity` is the calculated summed spectrum intensity,
-- `intensity_scaled` is the displayed intensity after normalization and scaling.
+- `intensity_scaled` is the displayed intensity after normalization and scaling,
+- `epsilon` is the estimated decadic molar extinction coefficient in `M⁻¹ cm⁻¹`, using the same area-normalized Gaussian line shape as the peak-table ε estimate. It is independent of the `normalizeSpectrum`/scale-factor display settings on `intensity_scaled`.
 
 The calculated spectrum shift is included in the exported x-axis values.
 
@@ -570,6 +581,7 @@ Compared to the original CLI version, the web app adds:
 - live parameter controls,
 - peak detection and peak tables,
 - estimated molar extinction coefficients for detected peaks,
+- optional continuous ε (molar extinction) curve on a right-hand axis,
 - modern light/dark interface,
 - direct PNG, CSV, and Markdown export from the browser.
 
